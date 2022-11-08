@@ -9,7 +9,7 @@ const nextConfig = {
     mongodb: {
       uri: process.env.MONGODB_URI,
       db: process.env.MONGODB_DATABASE,
-    }
+    },
   },
 };
 

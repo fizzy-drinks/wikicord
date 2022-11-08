@@ -30,7 +30,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
     await axios.put(`/api/${guild.id}/page/${pageTitle}`, {
       content: pageContent,
     });
-    router.push({ pathname: router.asPath, query: {} });
+    router.push({ pathname: router.asPath, query: { edit: "false " } });
   };
 
   return (
@@ -42,7 +42,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
       <p>{guild.name} wiki</p>
       <p>
         {!edit && (
-          <Link href={{ pathname: router.asPath, query: { edit: true } }}>
+          <Link href={{ pathname: router.asPath, query: { edit: "true" } }}>
             edit
           </Link>
         )}
@@ -68,7 +68,7 @@ export default WikiPage;
 const parseQuery = (query) => ({
   guildId: query["guild-id"] as string,
   pageTitle: query.page as string,
-  edit: "edit" in query,
+  edit: query.edit === "true",
 });
 
 export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
