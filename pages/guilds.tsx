@@ -1,9 +1,9 @@
 import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
-import Guilds from "../components/Guilds";
-import getGuilds from "../utils/getGuilds";
-import getSession from "../utils/getSession";
+import Guilds from "components/Guilds";
+import getGuilds from "utils/getGuilds";
+import getSession from "utils/getSession";
 
 type GuildsPageProps = {
   guilds: Guild[];

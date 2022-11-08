@@ -1,9 +1,9 @@
 import Cookies from "cookies";
 import { NextApiHandler } from "next";
-import dbConnection from "../../../../utils/dbConnection";
-import getGuilds from "../../../../utils/getGuilds";
-import getSession from "../../../../utils/getSession";
-import Page from "../../../../utils/types/Page";
+import dbConnection from "utils/dbConnection";
+import getGuilds from "utils/getGuilds";
+import getSession from "utils/getSession";
+import Page from "utils/types/Page";
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method !== "PUT") return res.status(400);

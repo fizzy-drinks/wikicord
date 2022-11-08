@@ -1,15 +1,15 @@
 import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
-import getGuilds from "../../../utils/getGuilds";
-import getSession from "../../../utils/getSession";
+import getGuilds from "utils/getGuilds";
+import getSession from "utils/getSession";
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
-import dbConnection from "../../../utils/dbConnection";
-import Page from "../../../utils/types/Page";
+import dbConnection from "utils/dbConnection";
+import Page from "utils/types/Page";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -26,11 +26,16 @@ const WikiPage: NextPage<WikiPageProps> = ({
 }) => {
   const router = useRouter();
   const [pageContent, setPageContent] = useState<string>(page?.content || "");
+  const [loading, setLoading] = useState(false);
   const updatePage = async () => {
+    setLoading(true);
     await axios.put(`/api/${guild.id}/page/${pageTitle}`, {
       content: pageContent,
     });
-    router.push({ pathname: router.asPath, query: { edit: "false " } });
+    router.push({
+      pathname: `/${guild.id}/wiki/${pageTitle}`,
+      query: { edit: "false" },
+    });
   };
 
   return (
@@ -42,7 +47,12 @@ const WikiPage: NextPage<WikiPageProps> = ({
       <p>{guild.name} wiki</p>
       <p>
         {!edit && (
-          <Link href={{ pathname: router.asPath, query: { edit: "true" } }}>
+          <Link
+            href={{
+              pathname: `/${guild.id}/wiki/${pageTitle}`,
+              query: { edit: "true" },
+            }}
+          >
             edit
           </Link>
         )}
@@ -53,7 +63,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
             value={pageContent}
             onChange={(e) => setPageContent(e.target.value)}
           />
-          <button type="button" onClick={updatePage}>
+          <button disabled={loading} type="button" onClick={updatePage}>
             Save
           </button>
         </div>
