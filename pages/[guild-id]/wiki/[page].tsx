@@ -39,37 +39,48 @@ const WikiPage: NextPage<WikiPageProps> = ({
   };
 
   return (
-    <main>
-      <h1>
-        {edit && "Editing "}
-        {pageTitle}
-      </h1>
-      <p>{guild.name} wiki</p>
-      <p>
-        {!edit && (
-          <Link
-            href={{
-              pathname: `/${guild.id}/wiki/${pageTitle}`,
-              query: { edit: "true" },
-            }}
-          >
-            edit
-          </Link>
+    <>
+      <header>
+        <nav>
+          <h1>{guild.name} wiki</h1>
+          <Link href={`/${guild.id}/wiki/Home_Page`}>Home page</Link> |{" "}
+          <Link href={`/${guild.id}`}>Summary</Link>
+        </nav>
+      </header>
+      <main>
+        <nav>
+          {edit ? (
+            <Link href={`/${guild.id}/wiki/${pageTitle}`}>read</Link>
+          ) : (
+            <Link
+              href={{
+                pathname: `/${guild.id}/wiki/${pageTitle}`,
+                query: { edit: "true" },
+              }}
+            >
+              edit page
+            </Link>
+          )}
+        </nav>
+        <h1>
+          {edit && "Editing "}
+          {pageTitle}
+        </h1>
+        <p></p>
+        {edit && (
+          <div>
+            <textarea
+              value={pageContent}
+              onChange={(e) => setPageContent(e.target.value)}
+            />
+            <button disabled={loading} type="button" onClick={updatePage}>
+              Save
+            </button>
+          </div>
         )}
-      </p>
-      {edit && (
-        <div>
-          <textarea
-            value={pageContent}
-            onChange={(e) => setPageContent(e.target.value)}
-          />
-          <button disabled={loading} type="button" onClick={updatePage}>
-            Save
-          </button>
-        </div>
-      )}
-      <ReactMarkdown>{pageContent}</ReactMarkdown>
-    </main>
+        <ReactMarkdown>{pageContent}</ReactMarkdown>
+      </main>
+    </>
   );
 };
 

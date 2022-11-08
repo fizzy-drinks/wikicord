@@ -7,7 +7,7 @@ const Guilds: FC<{ guilds: Guild[] }> = ({ guilds }) => {
     <ul>
       {guilds.map((guild) => (
         <li key={guild.id}>
-          <Link href={`/${guild.id}/wiki/Home_Page`}>{guild.name}</Link>
+          <Link href={`/${guild.id}`}>{guild.name}</Link>
         </li>
       ))}
     </ul>
