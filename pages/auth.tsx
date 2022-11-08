@@ -1,4 +1,5 @@
 import Cookies from "cookies";
+import add from "date-fns/add";
 import { GetServerSideProps, NextPage } from "next";
 import getConfig from "next/config";
 import { useRouter } from "next/router";
@@ -59,8 +60,15 @@ export const getServerSideProps: GetServerSideProps = async ({
     redirect_uri: serverRuntimeConfig.discord.redirectUri,
     scope: "guilds",
   });
+  const expiresAt = add(new Date(), {
+    seconds: accessToken.token.expires_in,
+  });
 
-  cookies.set("discord_token", JSON.stringify(accessToken), { path: "/" });
+  cookies.set(
+    "discord_token",
+    JSON.stringify({ ...accessToken.token, expires_at: expiresAt }),
+    { path: "/" }
+  );
 
   return {
     props: {},
