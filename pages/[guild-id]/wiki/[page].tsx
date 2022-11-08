@@ -1,7 +1,7 @@
 import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
-import getGuilds from "utils/getGuilds";
+import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import ReactMarkdown from "react-markdown";
 import { useState } from "react";
@@ -94,7 +94,7 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
     return { redirect: { destination: "/", permanent: false } };
   }
 
-  const guilds = await getGuilds(session);
+  const guilds = await fetchSessionGuilds(session);
   const guild = guilds.find((g) => g.id === guildId);
   if (!guild) {
     return { redirect: { destination: "/guilds", permanent: false } };

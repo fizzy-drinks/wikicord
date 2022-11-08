@@ -2,7 +2,7 @@ import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import Guilds from "components/Guilds";
-import getGuilds from "utils/getGuilds";
+import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 
 type GuildsPageProps = {
@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps<GuildsPageProps> = async ({
     return { redirect: { permanent: false, destination: "/" } };
   }
 
-  const guilds = await getGuilds(session);
+  const guilds = await fetchSessionGuilds(session);
 
   return {
     props: {

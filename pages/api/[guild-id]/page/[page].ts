@@ -1,7 +1,7 @@
 import Cookies from "cookies";
 import { NextApiHandler } from "next";
 import dbConnection from "utils/dbConnection";
-import getGuilds from "utils/getGuilds";
+import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import Page from "utils/types/Page";
 
@@ -16,7 +16,7 @@ const handler: NextApiHandler = async (req, res) => {
   const session = await getSession(cookies);
   if (!session) return res.status(401);
 
-  const guilds = await getGuilds(session);
+  const guilds = await fetchSessionGuilds(session);
   const guild = guilds.find((g) => g.id === guildId);
   if (!guild) {
     return res.status(403);
