@@ -10,6 +10,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import dbConnection from "utils/dbConnection";
 import Page from "utils/types/Page";
+import rehypeToc from "@jsdevtools/rehype-toc";
+import rehypeSlug from "rehype-slug";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -70,7 +72,6 @@ const WikiPage: NextPage<WikiPageProps> = ({
           {edit && "Editing "}
           {pageTitle}
         </h1>
-        <p></p>
         {edit && (
           <div>
             <textarea
@@ -82,9 +83,11 @@ const WikiPage: NextPage<WikiPageProps> = ({
             </button>
           </div>
         )}
-        <ReactMarkdown>
-          {pageContent.replace(/\[\[(.+)\]\]/g, "[$1]($1)")}
-        </ReactMarkdown>
+        <article id="article">
+          <ReactMarkdown rehypePlugins={[rehypeSlug, rehypeToc]}>
+            {pageContent.replace(/\[\[(.+)\]\]/g, "[$1]($1)")}
+          </ReactMarkdown>
+        </article>
       </main>
     </>
   );
