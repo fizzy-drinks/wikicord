@@ -4,7 +4,7 @@ import { GetServerSideProps, NextPage } from "next";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import ReactMarkdown from "react-markdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -26,6 +26,10 @@ const WikiPage: NextPage<WikiPageProps> = ({
 }) => {
   const router = useRouter();
   const [pageContent, setPageContent] = useState<string>(page?.content || "");
+  useEffect(() => {
+    setPageContent(page?.content || "");
+  }, [page]);
+
   const [loading, setLoading] = useState(false);
   const updatePage = async () => {
     setLoading(true);
