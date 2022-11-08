@@ -4,6 +4,7 @@ import getConfig from "next/config";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { AuthorizationCode } from "simple-oauth2";
+import getSession from "utils/getSession";
 
 const AuthPage: NextPage = () => {
   const router = useRouter();
@@ -33,6 +34,12 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
   }
 
+  const cookies = new Cookies(req, res);
+  const session = await getSession(cookies);
+  if (session) {
+    return { redirect: { permanent: false, destination: "/guilds" } };
+  }
+
   const { serverRuntimeConfig } = getConfig();
 
   const discordClient = new AuthorizationCode({
@@ -53,7 +60,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     scope: "guilds",
   });
 
-  const cookies = new Cookies(req, res);
   cookies.set("discord_token", JSON.stringify(accessToken), { path: "/" });
 
   return {

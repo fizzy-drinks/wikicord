@@ -1,6 +1,8 @@
+import Cookies from "cookies";
 import { GetServerSideProps, NextPage } from "next";
 import getConfig from "next/config";
 import { AuthorizationCode } from "simple-oauth2";
+import getSession from "utils/getSession";
 
 type HomePageProps = {
   authUrl: string;
@@ -16,9 +18,16 @@ const HomePage: NextPage<HomePageProps> = ({ authUrl }) => {
 
 export default HomePage;
 
-export const getServerSideProps: GetServerSideProps<
-  HomePageProps
-> = async () => {
+export const getServerSideProps: GetServerSideProps<HomePageProps> = async ({
+  req,
+  res,
+}) => {
+  const cookies = new Cookies(req, res);
+  const session = await getSession(cookies);
+  if (session) {
+    return { redirect: { permanent: false, destination: "/guilds" } };
+  }
+
   const { serverRuntimeConfig } = getConfig();
 
   const discordClient = new AuthorizationCode({
