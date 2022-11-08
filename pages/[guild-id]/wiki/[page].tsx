@@ -50,7 +50,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
       <main>
         <nav>
           {edit ? (
-            <Link href={`/${guild.id}/wiki/${pageTitle}`}>read</Link>
+            <Link href={`/${guild.id}/wiki/${pageTitle}`}>Article</Link>
           ) : (
             <Link
               href={{
@@ -58,7 +58,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
                 query: { edit: "true" },
               }}
             >
-              edit page
+              Source
             </Link>
           )}
         </nav>
@@ -78,7 +78,9 @@ const WikiPage: NextPage<WikiPageProps> = ({
             </button>
           </div>
         )}
-        <ReactMarkdown>{pageContent}</ReactMarkdown>
+        <ReactMarkdown>
+          {pageContent.replace(/\[\[(.+)\]\]/g, "[$1]($1)")}
+        </ReactMarkdown>
       </main>
     </>
   );
@@ -112,7 +114,10 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
   }
 
   const pages = (await dbConnection()).collection<Page>("pages");
-  const pageDoc = await pages.findOne({ guild_id: guildId, title: pageTitle });
+  const pageDoc = await pages.findOne({
+    guild_id: guildId,
+    title: pageTitle.toLowerCase(),
+  });
 
   const page = pageDoc
     ? {

@@ -5,12 +5,17 @@ import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import Page from "utils/types/Page";
 
+const parseQuery = (query) => ({
+  guildId: query["guild-id"] as string,
+  page: query.page as string,
+});
+
 const handler: NextApiHandler = async (req, res) => {
   if (req.method !== "PUT") return res.status(400);
 
   if (!("content" in req.body)) return res.status(400);
 
-  const { "guild-id": guildId, page } = req.query;
+  const { guildId, page } = parseQuery(req.query);
 
   const cookies = new Cookies(req, res);
   const session = await getSession(cookies);
@@ -24,7 +29,7 @@ const handler: NextApiHandler = async (req, res) => {
 
   const pages = (await dbConnection()).collection<Page>("pages");
   await pages.findOneAndUpdate(
-    { guild_id: guildId, title: page },
+    { guild_id: guildId, title: page.toLowerCase() },
     { $set: { content: req.body.content } },
     { upsert: true }
   );
