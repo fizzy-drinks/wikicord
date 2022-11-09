@@ -37,7 +37,7 @@ const Guilds: FC<{ guilds: { guild: Guild; articleCount: number }[] }> = ({
   return (
     <>
       {guilds.map(({ guild, articleCount }) => (
-        <Link href={`/${guild.id}`} key={guild.id}>
+        <Link href={`/${guild.id}/wiki/Home_Page`} key={guild.id}>
           <GuildCard>
             <Image
               src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp?size=128`}
