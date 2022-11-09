@@ -25,6 +25,7 @@
     "rehype-slug": "^5.1.0",
     "remark-gfm": "^3.0.1",
     "remark-sectionize": "^1.1.1",
+    "remark-wiki-link": "^1.0.4",
     "simple-oauth2": "^5.0.0",
     "styled-components": "^5.3.6"
   },
