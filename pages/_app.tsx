@@ -15,6 +15,24 @@ const Styles = createGlobalStyle`
       text-decoration: underline;
     }
   }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  article {
+    h1 {
+      font-size: 1.8em;
+    }
+  }
+
+  h2 {
+    font-size: 1.5em;
+  }
+
+  h3 {
+    font-size: 1.35em;
+  }
 `;
 
 const WikicordApp: NextPage<AppProps> = ({ Component, pageProps }) => {
