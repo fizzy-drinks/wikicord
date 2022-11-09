@@ -12,6 +12,7 @@ import rehypeSlug from "rehype-slug";
 import Header from "components/Header";
 import remarkGfm from "remark-gfm";
 import { ObjectId } from "mongodb";
+import capitalise from "utils/capitalise";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -34,7 +35,7 @@ const WikiPage: NextPage<WikiPageProps> = ({ pageTitle, page, guild }) => {
             Source
           </Link>
         </nav>
-        <h1>{pageTitle}</h1>
+        <h1>{capitalise(pageTitle)}</h1>
         <p>
           You are viewing a historical version of{" "}
           <Link href={`/${guild.id}/wiki/${page?.title}`}>{page?.title}</Link>.

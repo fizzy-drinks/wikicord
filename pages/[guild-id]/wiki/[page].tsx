@@ -14,6 +14,7 @@ import rehypeToc from "@jsdevtools/rehype-toc";
 import rehypeSlug from "rehype-slug";
 import Header from "components/Header";
 import remarkGfm from "remark-gfm";
+import capitalise from "utils/capitalise";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -67,7 +68,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
         </nav>
         <h1>
           {edit && "Editing "}
-          {pageTitle}
+          {capitalise(pageTitle)}
         </h1>
         {page?.date && <p>Last edited on {page.date}</p>}
         {edit && (

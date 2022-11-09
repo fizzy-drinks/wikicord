@@ -3,6 +3,7 @@ import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
+import capitalise from "utils/capitalise";
 import dbConnection from "utils/dbConnection";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
@@ -26,7 +27,7 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
           {pages.map((page) => (
             <li key={page.title}>
               <Link href={`/${guild.id}/wiki/${page.title}/${page._id}`}>
-                {page.title}
+                {capitalise(page.title)}
               </Link>{" "}
               {page.date && `(${page.date})`}
             </li>
