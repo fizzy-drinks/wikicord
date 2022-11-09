@@ -38,7 +38,7 @@ const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
           {versions.map((version) => (
             <li key={version._id}>
               <Link href={`/${guild.id}/wiki/${pageTitle}/${version._id}`}>
-                {version.date && `(${version.date})`}
+                {version.date || "(no date)"}
               </Link>
             </li>
           ))}
