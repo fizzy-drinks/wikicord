@@ -1,4 +1,5 @@
 import Header from "components/Header";
+import SearchBar from "components/SearchBar";
 import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
@@ -8,21 +9,24 @@ import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import Page from "utils/types/Page";
 
-type GuildSummaryPageProps = {
+type WikiSearchPageProps = {
   guild: Guild;
-  pages: Page[];
+  results: Page[];
+  searchQuery: string;
 };
 
-const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
+const WikiSearchPage: NextPage<WikiSearchPageProps> = ({
   guild,
-  pages,
+  results,
+  searchQuery,
 }) => {
   return (
     <>
       <Header guild={guild} />
       <main>
+        <SearchBar query={searchQuery} guild={guild} />
         <ul>
-          {pages.map((page) => (
+          {results.map((page) => (
             <li key={page.title}>
               <Link href={`/${guild.id}/wiki/${page.title}`}>{page.title}</Link>
             </li>
@@ -33,14 +37,17 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
   );
 };
 
-export default GuildSummaryPage;
+export default WikiSearchPage;
 
-const parseQuery = (query) => ({ guildId: query["guild-id"] as string });
+const parseQuery = (query) => ({
+  guildId: query["guild-id"] as string,
+  q: query.q || "",
+});
 
 export const getServerSideProps: GetServerSideProps<
-  GuildSummaryPageProps
+  WikiSearchPageProps
 > = async ({ req, res, query }) => {
-  const { guildId } = parseQuery(query);
+  const { guildId, q: searchQuery } = parseQuery(query);
 
   const cookies = new Cookies(req, res);
   const session = await getSession(cookies);
@@ -65,13 +72,19 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const pagesDb = (await dbConnection()).collection<Page>("pages");
-  const pageDocs = await pagesDb.find({ guild_id: guildId }).toArray();
+  const pageDocs = await pagesDb
+    .find({
+      guild_id: guildId,
+      title: { $regex: new RegExp(searchQuery.replace(" ", "_"), "i") },
+    })
+    .toArray();
   const pages = pageDocs.map((page) => ({ ...page, _id: page._id.toString() }));
 
   return {
     props: {
       guild,
-      pages,
+      searchQuery,
+      results: pages,
     },
   };
 };

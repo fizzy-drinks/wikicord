@@ -12,6 +12,7 @@ import dbConnection from "utils/dbConnection";
 import Page from "utils/types/Page";
 import rehypeToc from "@jsdevtools/rehype-toc";
 import rehypeSlug from "rehype-slug";
+import Header from "components/Header";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -46,13 +47,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
 
   return (
     <>
-      <header>
-        <nav>
-          <h1>{guild.name} wiki</h1>
-          <Link href={`/${guild.id}/wiki/Home_Page`}>Home page</Link> |{" "}
-          <Link href={`/${guild.id}`}>Summary</Link>
-        </nav>
-      </header>
+      <Header guild={guild} />
       <main>
         <nav>
           {edit ? (
@@ -75,6 +70,12 @@ const WikiPage: NextPage<WikiPageProps> = ({
         {edit && (
           <div>
             <textarea
+              style={{
+                width: "100%",
+                minHeight: 400,
+                fontFamily: "sans-serif",
+                borderRadius: 2,
+              }}
               value={pageContent}
               onChange={(e) => setPageContent(e.target.value)}
             />
