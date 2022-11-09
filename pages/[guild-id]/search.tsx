@@ -78,7 +78,7 @@ export const getServerSideProps: GetServerSideProps<
   const pageDocs = await pagesDb
     .find({
       guild_id: guildId,
-      title: { $regex: new RegExp(searchQuery.replace(" ", "_"), "i") },
+      title: { $regex: new RegExp(searchQuery.replace(" ", "[_\\s]"), "i") },
       content: { $regex: new RegExp(searchQuery, "i") },
     })
     .toArray();
