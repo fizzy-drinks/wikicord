@@ -3,6 +3,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  images: { domains: ["cdn.discordapp.com"] },
   serverRuntimeConfig: {
     discord: {
       clientId: process.env.DISCORD_CLIENT_ID,
