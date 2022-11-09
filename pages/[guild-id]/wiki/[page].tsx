@@ -17,6 +17,8 @@ import remarkGfm from "remark-gfm";
 import capitalise from "utils/capitalise";
 import enhanceWikiLinks from "utils/enhanceWikiLinks";
 import serialisePage from "utils/mappers/serialisePage";
+import rehypePrism from "rehype-prism-plus";
+import remarkSectionize from "remark-sectionize";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -92,8 +94,12 @@ const WikiPage: NextPage<WikiPageProps> = ({
         )}
         <article id="article">
           <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeSlug, rehypeToc]}
+            remarkPlugins={[remarkGfm, remarkSectionize]}
+            rehypePlugins={[
+              rehypeSlug,
+              rehypeToc,
+              [rehypePrism, { ignoreMissing: true, showLineNumbers: true }],
+            ]}
           >
             {enhanceWikiLinks(pageContent)}
           </ReactMarkdown>

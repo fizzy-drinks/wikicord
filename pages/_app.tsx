@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { AppProps } from "next/app";
 import { createGlobalStyle } from "styled-components";
+import "prism-themes/themes/prism-dracula.css";
 
 const Styles = createGlobalStyle`
   html {
