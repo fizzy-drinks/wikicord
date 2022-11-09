@@ -25,15 +25,16 @@ const Styles = createGlobalStyle`
   article {
     h1 {
       font-size: 1.8em;
+      border-bottom: 1px solid #eee;
     }
   }
 
   h2 {
-    font-size: 1.35em;
+    font-size: 1.45em;
   }
 
   h3 {
-    font-size: 1.2em;
+    font-size: 1.3em;
   }
 
   h4 {
