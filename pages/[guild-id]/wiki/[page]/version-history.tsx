@@ -40,6 +40,7 @@ const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
               <Link href={`/${guild.id}/wiki/${pageTitle}/${version._id}`}>
                 {version.date || "(no date)"}
               </Link>
+              {version.author && ` by ${version.author}`}
             </li>
           ))}
         </ul>

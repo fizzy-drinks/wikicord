@@ -2,6 +2,7 @@ import Cookies from "cookies";
 import { NextApiHandler } from "next";
 import dbConnection from "utils/dbConnection";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
+import fetchSessionUser from "utils/fetchSessionUser";
 import getSession from "utils/getSession";
 import { PageDb } from "utils/types/Page";
 
@@ -27,12 +28,14 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(403);
   }
 
+  const user = await fetchSessionUser(session);
   const pages = (await dbConnection()).collection<PageDb>("pages");
   await pages.insertOne({
     guild_id: guildId,
     title: page.toLowerCase().replace(/\s/g, "_"),
     content: req.body.content,
     date: new Date(),
+    author: `${user.username}#${user.discriminator}`,
   });
 
   res.status(200).send("Success!");

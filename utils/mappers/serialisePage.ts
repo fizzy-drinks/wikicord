@@ -5,6 +5,7 @@ const serialisePage = (pageDoc: WithId<PageDb>): Page => ({
   ...pageDoc,
   _id: pageDoc._id.toString(),
   date: pageDoc.date?.toISOString() ?? null,
+  author: pageDoc.author ?? null,
 });
 
 export default serialisePage;

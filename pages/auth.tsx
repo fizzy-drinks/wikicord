@@ -58,7 +58,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const accessToken = await discordClient.getToken({
     code: query.code,
     redirect_uri: serverRuntimeConfig.discord.redirectUri,
-    scope: "guilds",
+    scope: ["guilds", "identify"],
   });
   const expiresAt = add(new Date(), {
     seconds: accessToken.token.expires_in,

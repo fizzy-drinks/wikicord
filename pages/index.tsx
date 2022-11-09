@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps<HomePageProps> = async ({
 
   const authUrl = discordClient.authorizeURL({
     redirect_uri: serverRuntimeConfig.discord.redirectUri,
-    scope: "guilds",
+    scope: ["guilds", "identify"],
   });
 
   return {

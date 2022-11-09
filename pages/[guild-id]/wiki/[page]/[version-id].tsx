@@ -33,8 +33,8 @@ const VersionPage: NextPage<VersionPageProps> = ({
           You are viewing a historical version of{" "}
           <Link href={`/${guild.id}/wiki/${page?.title}`}>
             {capitalise(pageTitle)}
-          </Link>
-          .
+          </Link>{" "}
+          from {page.date}, edited by {page.author || "someone"}.
         </p>
         {page?.date && <p>Last edited on {page.date}</p>}
         {page?.content && (

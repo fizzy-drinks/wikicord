@@ -3,6 +3,7 @@ export type PageDb = {
   title: string;
   content: string;
   date?: Date;
+  author?: string;
 };
 
 export type Page = {
@@ -11,4 +12,5 @@ export type Page = {
   title: string;
   content: string;
   date: string | null;
+  author: string | null;
 };
