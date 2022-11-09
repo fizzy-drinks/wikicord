@@ -76,6 +76,7 @@ export const getServerSideProps: GetServerSideProps<
     .find({
       guild_id: guildId,
       title: { $regex: new RegExp(searchQuery.replace(" ", "_"), "i") },
+      content: { $regex: new RegExp(searchQuery.replace(" ", "_"), "i") },
     })
     .toArray();
   const pages = pageDocs.map((page) => ({ ...page, _id: page._id.toString() }));
