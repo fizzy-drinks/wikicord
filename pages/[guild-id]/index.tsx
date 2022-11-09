@@ -7,12 +7,11 @@ import capitalise from "utils/capitalise";
 import dbConnection from "utils/dbConnection";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
-import serialisePage from "utils/mappers/serialisePage";
-import { Page, PageDb } from "utils/types/Page";
+import { PageDb } from "utils/types/Page";
 
 type GuildSummaryPageProps = {
   guild: Guild;
-  latestEdits: Page[];
+  latestEdits: { title: string; date: string | null }[];
 };
 
 const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
@@ -23,17 +22,19 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
     <>
       <Header guild={guild} />
       <main>
-        <h1>Latest edits</h1>
-        <ul>
-          {latestEdits.map((page) => (
-            <li key={page.title}>
-              <Link href={`/${guild.id}/wiki/${page.title}/${page._id}`}>
-                {capitalise(page.title)}
-              </Link>{" "}
-              {page.date && `(${page.date})`}
-            </li>
-          ))}
-        </ul>
+        <section>
+          <h1>Recently updated articles</h1>
+          <ul>
+            {latestEdits.map((page) => (
+              <li key={page.title}>
+                <Link href={`/${guild.id}/wiki/${page.title}`}>
+                  {capitalise(page.title)}
+                </Link>{" "}
+                {page.date && `(${page.date})`}
+              </li>
+            ))}
+          </ul>
+        </section>
       </main>
     </>
   );
@@ -72,10 +73,27 @@ export const getServerSideProps: GetServerSideProps<
 
   const pagesDb = (await dbConnection()).collection<PageDb>("pages");
   const pages = await pagesDb
-    .find({ guild_id: guildId })
-    .sort({ date: -1 })
-    .limit(10)
-    .map(serialisePage)
+    .aggregate<{
+      title: string;
+      date?: Date;
+    }>([
+      {
+        $match: {
+          guild_id: guildId,
+        },
+      },
+      { $sort: { date: -1 } },
+      { $group: { _id: "$title", date: { $first: "$date" } } },
+      { $limit: 50 },
+      { $sort: { date: -1 } },
+      {
+        $project: {
+          title: "$_id",
+          date: 1,
+        },
+      },
+    ])
+    .map((obj) => ({ ...obj, date: obj.date?.toISOString() ?? null }))
     .toArray();
 
   return {

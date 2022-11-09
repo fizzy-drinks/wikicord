@@ -23,7 +23,7 @@ const Header: FC<{ guild: Guild }> = ({ guild }) => {
       <TopNav>
         <h1 style={{ margin: 0 }}>{guild.name} wiki</h1>
         <Link href={`/${guild.id}/wiki/Home_Page`}>Home page</Link>
-        <Link href={`/${guild.id}`}>Wiki Summary</Link>
+        <Link href={`/${guild.id}`}>Wiki summary</Link>
         <Link href="/guilds">My servers</Link>
         <SearchBar guild={guild} query="" />
       </TopNav>

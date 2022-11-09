@@ -22,7 +22,8 @@ const Styles = createGlobalStyle`
     margin: 0;
   }
 
-  article {
+  article,
+  section {
     h1 {
       font-size: 1.8em;
       border-bottom: 1px solid #eee;
