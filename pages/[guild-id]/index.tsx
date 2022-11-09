@@ -7,16 +7,17 @@ import capitalise from "utils/capitalise";
 import dbConnection from "utils/dbConnection";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
+import serialisePage from "utils/mappers/serialisePage";
 import { Page, PageDb } from "utils/types/Page";
 
 type GuildSummaryPageProps = {
   guild: Guild;
-  pages: Page[];
+  latestEdits: Page[];
 };
 
 const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
   guild,
-  pages,
+  latestEdits,
 }) => {
   return (
     <>
@@ -24,7 +25,7 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
       <main>
         <h1>Latest edits</h1>
         <ul>
-          {pages.map((page) => (
+          {latestEdits.map((page) => (
             <li key={page.title}>
               <Link href={`/${guild.id}/wiki/${page.title}/${page._id}`}>
                 {capitalise(page.title)}
@@ -70,20 +71,17 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const pagesDb = (await dbConnection()).collection<PageDb>("pages");
-  const pageDocs = await pagesDb
+  const pages = await pagesDb
     .find({ guild_id: guildId })
     .sort({ date: -1 })
+    .limit(10)
+    .map(serialisePage)
     .toArray();
-  const pages: Page[] = pageDocs.map((page) => ({
-    ...page,
-    _id: page._id.toString(),
-    date: page.date?.toISOString() ?? null,
-  }));
 
   return {
     props: {
       guild,
-      pages,
+      latestEdits: pages,
     },
   };
 };

@@ -14,6 +14,7 @@ import remarkGfm from "remark-gfm";
 import { ObjectId } from "mongodb";
 import capitalise from "utils/capitalise";
 import enhanceWikiLinks from "utils/enhanceWikiLinks";
+import serialisePage from "utils/mappers/serialisePage";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -85,22 +86,19 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
   }
 
   const pages = (await dbConnection()).collection<PageDb>("pages");
-  const [pageDoc] = await pages
+  const [page] = await pages
     .find({ _id: new ObjectId(versionId) })
+    .map(serialisePage)
     .toArray();
 
-  const page: Page | null = pageDoc
-    ? {
-        ...pageDoc,
-        _id: pageDoc._id.toString(),
-        date: pageDoc.date?.toISOString() ?? null,
-      }
-    : null;
+  if (!guilds.some((g) => page.guild_id === g.id)) {
+    return { redirect: { destination: "/guilds", permanent: false } };
+  }
 
   return {
     props: {
       pageTitle,
-      page,
+      page: page ?? null,
       guild,
     },
   };

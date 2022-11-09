@@ -16,6 +16,7 @@ import Header from "components/Header";
 import remarkGfm from "remark-gfm";
 import capitalise from "utils/capitalise";
 import enhanceWikiLinks from "utils/enhanceWikiLinks";
+import serialisePage from "utils/mappers/serialisePage";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -130,7 +131,7 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
   }
 
   const pages = (await dbConnection()).collection<PageDb>("pages");
-  const [pageDoc] = await pages
+  const [page] = await pages
     .find({
       guild_id: guildId,
       title: {
@@ -142,20 +143,13 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
     })
     .sort({ date: -1 })
     .limit(1)
+    .map(serialisePage)
     .toArray();
-
-  const page: Page | null = pageDoc
-    ? {
-        ...pageDoc,
-        _id: pageDoc._id.toString(),
-        date: pageDoc.date?.toISOString() ?? null,
-      }
-    : null;
 
   return {
     props: {
       pageTitle,
-      page,
+      page: page ?? null,
       guild,
       edit,
     },
