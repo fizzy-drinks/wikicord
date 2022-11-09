@@ -11,7 +11,7 @@ const TopNav = styled.nav`
   background-color: #eee;
   padding: 0.5rem;
 
-  @media (max-width: 840px) {
+  @media (max-width: 1024px) {
     flex-direction: column;
     align-items: flex-start;
   }

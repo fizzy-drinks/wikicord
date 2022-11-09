@@ -7,21 +7,19 @@ import Link from "next/link";
 import dbConnection from "utils/dbConnection";
 import { Page, PageDb } from "utils/types/Page";
 import Header from "components/Header";
-import { ObjectId } from "mongodb";
 import serialisePage from "utils/mappers/serialisePage";
-import WikiParser from "components/WikiParser";
 import ArticleNavigation from "components/ArticleNavigation";
 import capitalise from "utils/capitalise";
 
-type VersionPageProps = {
+type VersionHistoryPageProps = {
   pageTitle: string;
   guild: Guild;
-  page: Page;
+  versions: Page[];
 };
 
-const VersionPage: NextPage<VersionPageProps> = ({
+const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
   pageTitle,
-  page,
+  versions,
   guild,
 }) => {
   return (
@@ -30,37 +28,37 @@ const VersionPage: NextPage<VersionPageProps> = ({
       <main>
         <ArticleNavigation guild={guild} pageTitle={pageTitle} edit={false} />
         <p>
-          You are viewing a historical version of{" "}
-          <Link href={`/${guild.id}/wiki/${page?.title}`}>
+          Version history of{" "}
+          <Link href={`/${guild.id}/wiki/${pageTitle}`}>
             {capitalise(pageTitle)}
           </Link>
           .
         </p>
-        {page?.date && <p>Last edited on {page.date}</p>}
-        {page?.content && (
-          <article id="article">
-            <WikiParser>{page.content}</WikiParser>
-          </article>
-        )}
+        <ul>
+          {versions.map((version) => (
+            <li key={version._id}>
+              <Link href={`/${guild.id}/wiki/${pageTitle}/${version._id}`}>
+                {version.date && `(${version.date})`}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </main>
     </>
   );
 };
 
-export default VersionPage;
+export default VersionHistoryPage;
 
 const parseQuery = (query) => ({
   guildId: query["guild-id"] as string,
   pageTitle: query.page as string,
-  versionId: query["version-id"] as string,
 });
 
-export const getServerSideProps: GetServerSideProps<VersionPageProps> = async ({
-  query,
-  req,
-  res,
-}) => {
-  const { guildId, pageTitle, versionId } = parseQuery(query);
+export const getServerSideProps: GetServerSideProps<
+  VersionHistoryPageProps
+> = async ({ query, req, res }) => {
+  const { guildId, pageTitle } = parseQuery(query);
 
   const cookies = new Cookies(req, res);
   const session = await getSession(cookies);
@@ -75,28 +73,25 @@ export const getServerSideProps: GetServerSideProps<VersionPageProps> = async ({
   }
 
   const pages = (await dbConnection()).collection<PageDb>("pages");
-  const [page] = await pages
-    .find({ _id: new ObjectId(versionId) })
+  const versions = await pages
+    .find({
+      guild_id: guildId,
+      title: {
+        $in: [
+          pageTitle.toLowerCase().replace(/_/g, " "),
+          pageTitle.toLowerCase().replace(/\s/g, "_"),
+        ],
+      },
+    })
+    .sort({ date: -1 })
+    .limit(50)
     .map(serialisePage)
     .toArray();
-
-  if (!page) {
-    return {
-      redirect: {
-        destination: `/${guildId}/wiki/${pageTitle}`,
-        permanent: false,
-      },
-    };
-  }
-
-  if (!guilds.some((g) => page.guild_id === g.id)) {
-    return { redirect: { destination: "/guilds", permanent: false } };
-  }
 
   return {
     props: {
       pageTitle,
-      page,
+      versions,
       guild,
     },
   };

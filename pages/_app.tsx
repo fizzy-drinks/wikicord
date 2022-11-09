@@ -19,6 +19,7 @@ const Styles = createGlobalStyle`
 
   h1 {
     font-size: 2em;
+    margin: 0;
   }
 
   article {
@@ -33,6 +34,10 @@ const Styles = createGlobalStyle`
 
   h3 {
     font-size: 1.35em;
+  }
+
+  main {
+    margin-top: 1rem;
   }
 `;
 

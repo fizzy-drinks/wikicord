@@ -4,15 +4,14 @@ import { GetServerSideProps, NextPage } from "next";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
 import dbConnection from "utils/dbConnection";
 import { Page, PageDb } from "utils/types/Page";
 import Header from "components/Header";
-import capitalise from "utils/capitalise";
 import serialisePage from "utils/mappers/serialisePage";
 import WikiParser from "components/WikiParser";
+import ArticleNavigation from "components/ArticleNavigation";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -50,24 +49,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
     <>
       <Header guild={guild} />
       <main>
-        <nav>
-          {edit ? (
-            <Link href={`/${guild.id}/wiki/${pageTitle}`}>Article</Link>
-          ) : (
-            <Link
-              href={{
-                pathname: `/${guild.id}/wiki/${pageTitle}`,
-                query: { edit: "true" },
-              }}
-            >
-              Source
-            </Link>
-          )}
-        </nav>
-        <h1>
-          {edit && "Editing "}
-          {capitalise(pageTitle)}
-        </h1>
+        <ArticleNavigation guild={guild} pageTitle={pageTitle} edit={edit} />
         {page?.date && <p>Last edited on {page.date}</p>}
         {edit && (
           <div>
