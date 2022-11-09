@@ -29,11 +29,15 @@ const Styles = createGlobalStyle`
   }
 
   h2 {
-    font-size: 1.5em;
+    font-size: 1.35em;
   }
 
   h3 {
-    font-size: 1.35em;
+    font-size: 1.2em;
+  }
+
+  h4 {
+    font-size: 1.1em;
   }
 
   main {
