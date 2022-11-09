@@ -21,7 +21,8 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.3",
     "rehype-slug": "^5.1.0",
-    "simple-oauth2": "^5.0.0"
+    "simple-oauth2": "^5.0.0",
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
     "@types/cookies": "^0.7.7",
