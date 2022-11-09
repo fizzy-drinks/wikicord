@@ -75,11 +75,18 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const pagesDb = (await dbConnection()).collection<PageDb>("pages");
+  console.log(new RegExp(searchQuery.replace(/\s/g, "[_\\s]"), "i"));
   const pageDocs = await pagesDb
     .find({
       guild_id: guildId,
-      title: { $regex: new RegExp(searchQuery.replace(" ", "[_\\s]"), "i") },
-      content: { $regex: new RegExp(searchQuery, "i") },
+      $or: [
+        {
+          title: {
+            $regex: new RegExp(searchQuery.replace(/\s/g, "[_\\s]"), "i"),
+          },
+        },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ],
     })
     .toArray();
   const pages: Page[] = pageDocs.map((page) => ({
