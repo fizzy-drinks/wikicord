@@ -25,7 +25,9 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
         <ul>
           {pages.map((page) => (
             <li key={page.title}>
-              <Link href={`/${guild.id}/wiki/${page.title}`}>{page.title}</Link>{" "}
+              <Link href={`/${guild.id}/wiki/${page.title}/${page._id}`}>
+                {page.title}
+              </Link>{" "}
               {page.date && `(${page.date})`}
             </li>
           ))}
