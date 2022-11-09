@@ -28,7 +28,7 @@ const WikiSearchPage: NextPage<WikiSearchPageProps> = ({
         <SearchBar query={searchQuery} guild={guild} />
         <ul>
           {results.map((page) => (
-            <li key={page.title}>
+            <li key={page._id}>
               <Link href={`/${guild.id}/wiki/${page.title}`}>
                 {capitalise(page.title)}
               </Link>
@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps<
     .find({
       guild_id: guildId,
       title: { $regex: new RegExp(searchQuery.replace(" ", "_"), "i") },
-      content: { $regex: new RegExp(searchQuery.replace(" ", "_"), "i") },
+      content: { $regex: new RegExp(searchQuery, "i") },
     })
     .toArray();
   const pages: Page[] = pageDocs.map((page) => ({

@@ -15,6 +15,7 @@ import rehypeSlug from "rehype-slug";
 import Header from "components/Header";
 import remarkGfm from "remark-gfm";
 import capitalise from "utils/capitalise";
+import enhanceWikiLinks from "utils/enhanceWikiLinks";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -93,7 +94,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeSlug, rehypeToc]}
           >
-            {pageContent.replace(/\[\[(.+)\]\]/g, "[$1]($1)")}
+            {enhanceWikiLinks(pageContent)}
           </ReactMarkdown>
         </article>
       </main>
@@ -132,7 +133,12 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
   const [pageDoc] = await pages
     .find({
       guild_id: guildId,
-      title: pageTitle.toLowerCase(),
+      title: {
+        $in: [
+          pageTitle.toLowerCase().replace(/_/g, " "),
+          pageTitle.toLowerCase().replace(/\s/g, "_"),
+        ],
+      },
     })
     .sort({ date: -1 })
     .limit(1)

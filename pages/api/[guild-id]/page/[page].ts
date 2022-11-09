@@ -30,7 +30,7 @@ const handler: NextApiHandler = async (req, res) => {
   const pages = (await dbConnection()).collection<PageDb>("pages");
   await pages.insertOne({
     guild_id: guildId,
-    title: page.toLowerCase(),
+    title: page.toLowerCase().replace(/\s/g, "_"),
     content: req.body.content,
     date: new Date(),
   });

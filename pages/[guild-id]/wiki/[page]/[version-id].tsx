@@ -13,6 +13,7 @@ import Header from "components/Header";
 import remarkGfm from "remark-gfm";
 import { ObjectId } from "mongodb";
 import capitalise from "utils/capitalise";
+import enhanceWikiLinks from "utils/enhanceWikiLinks";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -47,7 +48,7 @@ const WikiPage: NextPage<WikiPageProps> = ({ pageTitle, page, guild }) => {
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeSlug, rehypeToc]}
             >
-              {page.content.replace(/\[\[(.+)\]\]/g, "[$1]($1)")}
+              {enhanceWikiLinks(page.content)}
             </ReactMarkdown>
           </article>
         )}
