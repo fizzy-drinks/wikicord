@@ -44,6 +44,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
       pathname: `/${guild.id}/wiki/${pageTitle}`,
       query: { edit: "false" },
     });
+    setLoading(false);
   };
 
   return (
