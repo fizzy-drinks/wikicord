@@ -1,17 +1,26 @@
 import Cookies from "cookies";
 import { GetServerSideProps, NextPage } from "next";
 import getConfig from "next/config";
+import Link from "next/link";
 import { AuthorizationCode } from "simple-oauth2";
 import getSession from "utils/getSession";
 
 type HomePageProps = {
   authUrl: string;
+  isSignedIn: boolean;
 };
 
-const HomePage: NextPage<HomePageProps> = ({ authUrl }) => {
+const HomePage: NextPage<HomePageProps> = ({ authUrl, isSignedIn }) => {
   return (
     <div>
-      <a href={authUrl}>sign in</a>
+      {isSignedIn ? (
+        <>
+          <Link href="/guilds">My servers</Link> |{" "}
+          <Link href="/bye">Sign out</Link>
+        </>
+      ) : (
+        <a href={authUrl}>Sign in</a>
+      )}
     </div>
   );
 };
@@ -24,9 +33,6 @@ export const getServerSideProps: GetServerSideProps<HomePageProps> = async ({
 }) => {
   const cookies = new Cookies(req, res);
   const session = await getSession(cookies);
-  if (session) {
-    return { redirect: { permanent: false, destination: "/guilds" } };
-  }
 
   const { serverRuntimeConfig } = getConfig();
 
@@ -49,6 +55,7 @@ export const getServerSideProps: GetServerSideProps<HomePageProps> = async ({
   return {
     props: {
       authUrl,
+      isSignedIn: !!session,
     },
   };
 };
