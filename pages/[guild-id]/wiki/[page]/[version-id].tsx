@@ -3,18 +3,14 @@ import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
-import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import dbConnection from "utils/dbConnection";
 import { Page, PageDb } from "utils/types/Page";
-import rehypeToc from "@jsdevtools/rehype-toc";
-import rehypeSlug from "rehype-slug";
 import Header from "components/Header";
-import remarkGfm from "remark-gfm";
 import { ObjectId } from "mongodb";
 import capitalise from "utils/capitalise";
-import enhanceWikiLinks from "utils/enhanceWikiLinks";
 import serialisePage from "utils/mappers/serialisePage";
+import WikiParser from "components/WikiParser";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -45,12 +41,7 @@ const WikiPage: NextPage<WikiPageProps> = ({ pageTitle, page, guild }) => {
         {page?.date && <p>Last edited on {page.date}</p>}
         {page?.content && (
           <article id="article">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeSlug, rehypeToc]}
-            >
-              {enhanceWikiLinks(page.content)}
-            </ReactMarkdown>
+            <WikiParser>{page.content}</WikiParser>
           </article>
         )}
       </main>

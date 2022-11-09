@@ -3,22 +3,16 @@ import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
-import ReactMarkdown from "react-markdown";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
 import dbConnection from "utils/dbConnection";
 import { Page, PageDb } from "utils/types/Page";
-import rehypeToc from "@jsdevtools/rehype-toc";
-import rehypeSlug from "rehype-slug";
 import Header from "components/Header";
-import remarkGfm from "remark-gfm";
 import capitalise from "utils/capitalise";
-import enhanceWikiLinks from "utils/enhanceWikiLinks";
 import serialisePage from "utils/mappers/serialisePage";
-import rehypePrism from "rehype-prism-plus";
-import remarkSectionize from "remark-sectionize";
+import WikiParser from "components/WikiParser";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -93,16 +87,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
           </div>
         )}
         <article id="article">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkSectionize]}
-            rehypePlugins={[
-              rehypeSlug,
-              rehypeToc,
-              [rehypePrism, { ignoreMissing: true, showLineNumbers: true }],
-            ]}
-          >
-            {enhanceWikiLinks(pageContent)}
-          </ReactMarkdown>
+          <WikiParser>{pageContent}</WikiParser>
         </article>
       </main>
     </>
