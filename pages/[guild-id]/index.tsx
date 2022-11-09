@@ -6,7 +6,7 @@ import Link from "next/link";
 import dbConnection from "utils/dbConnection";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
-import Page from "utils/types/Page";
+import { Page, PageDb } from "utils/types/Page";
 
 type GuildSummaryPageProps = {
   guild: Guild;
@@ -21,10 +21,12 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
     <>
       <Header guild={guild} />
       <main>
+        <h1>Latest edits</h1>
         <ul>
           {pages.map((page) => (
             <li key={page.title}>
-              <Link href={`/${guild.id}/wiki/${page.title}`}>{page.title}</Link>
+              <Link href={`/${guild.id}/wiki/${page.title}`}>{page.title}</Link>{" "}
+              {page.date && `(${page.date})`}
             </li>
           ))}
         </ul>
@@ -64,9 +66,16 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
-  const pagesDb = (await dbConnection()).collection<Page>("pages");
-  const pageDocs = await pagesDb.find({ guild_id: guildId }).toArray();
-  const pages = pageDocs.map((page) => ({ ...page, _id: page._id.toString() }));
+  const pagesDb = (await dbConnection()).collection<PageDb>("pages");
+  const pageDocs = await pagesDb
+    .find({ guild_id: guildId })
+    .sort({ date: -1 })
+    .toArray();
+  const pages: Page[] = pageDocs.map((page) => ({
+    ...page,
+    _id: page._id.toString(),
+    date: page.date?.toISOString() ?? null,
+  }));
 
   return {
     props: {

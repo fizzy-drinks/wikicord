@@ -3,7 +3,7 @@ import { NextApiHandler } from "next";
 import dbConnection from "utils/dbConnection";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
-import Page from "utils/types/Page";
+import { PageDb } from "utils/types/Page";
 
 const parseQuery = (query) => ({
   guildId: query["guild-id"] as string,
@@ -27,12 +27,13 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(403);
   }
 
-  const pages = (await dbConnection()).collection<Page>("pages");
-  await pages.findOneAndUpdate(
-    { guild_id: guildId, title: page.toLowerCase() },
-    { $set: { content: req.body.content } },
-    { upsert: true }
-  );
+  const pages = (await dbConnection()).collection<PageDb>("pages");
+  await pages.insertOne({
+    guild_id: guildId,
+    title: page.toLowerCase(),
+    content: req.body.content,
+    date: new Date(),
+  });
 
   res.status(200).send("Success!");
 };

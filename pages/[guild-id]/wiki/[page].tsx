@@ -9,7 +9,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
 import dbConnection from "utils/dbConnection";
-import Page from "utils/types/Page";
+import { Page, PageDb } from "utils/types/Page";
 import rehypeToc from "@jsdevtools/rehype-toc";
 import rehypeSlug from "rehype-slug";
 import Header from "components/Header";
@@ -69,6 +69,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
           {edit && "Editing "}
           {pageTitle}
         </h1>
+        {page?.date && <p>Last edited on {page.date}</p>}
         {edit && (
           <div>
             <textarea
@@ -126,16 +127,21 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
     return { redirect: { destination: "/guilds", permanent: false } };
   }
 
-  const pages = (await dbConnection()).collection<Page>("pages");
-  const pageDoc = await pages.findOne({
-    guild_id: guildId,
-    title: pageTitle.toLowerCase(),
-  });
+  const pages = (await dbConnection()).collection<PageDb>("pages");
+  const [pageDoc] = await pages
+    .find({
+      guild_id: guildId,
+      title: pageTitle.toLowerCase(),
+    })
+    .sort({ date: -1 })
+    .limit(1)
+    .toArray();
 
-  const page = pageDoc
+  const page: Page | null = pageDoc
     ? {
         ...pageDoc,
         _id: pageDoc._id.toString(),
+        date: pageDoc.date?.toISOString() ?? null,
       }
     : null;
 
