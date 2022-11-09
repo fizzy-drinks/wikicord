@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  compiler: {
+    styledComponents: true,
+  },
   serverRuntimeConfig: {
     discord: {
       clientId: process.env.DISCORD_CLIENT_ID,
