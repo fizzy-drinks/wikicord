@@ -7,6 +7,14 @@ const Styles = createGlobalStyle`
     font-family: Merriweather, serif;
     line-height: 1.5;
   }
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 const WikicordApp: NextPage<AppProps> = ({ Component, pageProps }) => {
