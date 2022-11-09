@@ -13,6 +13,7 @@ import Page from "utils/types/Page";
 import rehypeToc from "@jsdevtools/rehype-toc";
 import rehypeSlug from "rehype-slug";
 import Header from "components/Header";
+import remarkGfm from "remark-gfm";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -85,7 +86,10 @@ const WikiPage: NextPage<WikiPageProps> = ({
           </div>
         )}
         <article id="article">
-          <ReactMarkdown rehypePlugins={[rehypeSlug, rehypeToc]}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeSlug, rehypeToc]}
+          >
             {pageContent.replace(/\[\[(.+)\]\]/g, "[$1]($1)")}
           </ReactMarkdown>
         </article>
