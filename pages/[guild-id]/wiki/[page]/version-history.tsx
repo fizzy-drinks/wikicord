@@ -10,6 +10,7 @@ import Header from "components/Header";
 import serialisePage from "utils/mappers/serialisePage";
 import ArticleNavigation from "components/ArticleNavigation";
 import capitalise from "utils/capitalise";
+import formatDateTime from "utils/formatDateTime";
 
 type VersionHistoryPageProps = {
   pageTitle: string;
@@ -38,7 +39,7 @@ const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
           {versions.map((version) => (
             <li key={version._id}>
               <Link href={`/${guild.id}/wiki/${pageTitle}/${version._id}`}>
-                {version.date || "(no date)"}
+                {version.date ? formatDateTime(version.date) : "(no date)"}
               </Link>
               {version.author && ` by ${version.author}`}
             </li>

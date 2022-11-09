@@ -12,6 +12,7 @@ import serialisePage from "utils/mappers/serialisePage";
 import WikiParser from "components/WikiParser";
 import ArticleNavigation from "components/ArticleNavigation";
 import capitalise from "utils/capitalise";
+import formatDateTime from "utils/formatDateTime";
 
 type VersionPageProps = {
   pageTitle: string;
@@ -34,7 +35,8 @@ const VersionPage: NextPage<VersionPageProps> = ({
           <Link href={`/${guild.id}/wiki/${page?.title}`}>
             {capitalise(pageTitle)}
           </Link>{" "}
-          from {page.date}, edited by {page.author || "someone"}.
+          from {page.date && formatDateTime(page.date)}, edited by{" "}
+          {page.author || "someone"}.
         </p>
         {page?.date && <p>Last edited on {page.date}</p>}
         {page?.content && (

@@ -12,6 +12,7 @@ import Header from "components/Header";
 import serialisePage from "utils/mappers/serialisePage";
 import WikiParser from "components/WikiParser";
 import ArticleNavigation from "components/ArticleNavigation";
+import formatDateTime from "utils/formatDateTime";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -50,7 +51,9 @@ const WikiPage: NextPage<WikiPageProps> = ({
       <Header guild={guild} />
       <main>
         <ArticleNavigation guild={guild} pageTitle={pageTitle} edit={edit} />
-        {page?.date && <p>Last edited on {page.date}</p>}
+        {page?.date && (
+          <small>Last edited on {formatDateTime(page.date)}</small>
+        )}
         {edit && (
           <div>
             <textarea

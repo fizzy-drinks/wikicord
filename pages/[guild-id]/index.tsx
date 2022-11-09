@@ -6,12 +6,13 @@ import Link from "next/link";
 import capitalise from "utils/capitalise";
 import dbConnection from "utils/dbConnection";
 import fetchSessionGuilds from "utils/fetchSessionGuilds";
+import formatDateTime from "utils/formatDateTime";
 import getSession from "utils/getSession";
 import { PageDb } from "utils/types/Page";
 
 type GuildSummaryPageProps = {
   guild: Guild;
-  latestEdits: { title: string; date: string | null }[];
+  latestEdits: { title: string; date: string | null; author: string | null }[];
 };
 
 const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
@@ -30,7 +31,8 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
                 <Link href={`/${guild.id}/wiki/${page.title}`}>
                   {capitalise(page.title)}
                 </Link>{" "}
-                {page.date && `(${page.date})`}
+                {page.date && <small>({formatDateTime(page.date)})</small>}{" "}
+                {page.author && <small>by {page.author}</small>}
               </li>
             ))}
           </ul>
@@ -76,6 +78,7 @@ export const getServerSideProps: GetServerSideProps<
     .aggregate<{
       title: string;
       date?: Date;
+      author?: string;
     }>([
       {
         $match: {
@@ -83,17 +86,28 @@ export const getServerSideProps: GetServerSideProps<
         },
       },
       { $sort: { date: -1 } },
-      { $group: { _id: "$title", date: { $first: "$date" } } },
+      {
+        $group: {
+          _id: "$title",
+          date: { $first: "$date" },
+          author: { $first: "$author" },
+        },
+      },
       { $limit: 50 },
       { $sort: { date: -1 } },
       {
         $project: {
           title: "$_id",
           date: 1,
+          author: 1,
         },
       },
     ])
-    .map((obj) => ({ ...obj, date: obj.date?.toISOString() ?? null }))
+    .map((obj) => ({
+      ...obj,
+      date: obj.date?.toISOString() ?? null,
+      author: obj.author ?? null,
+    }))
     .toArray();
 
   return {
