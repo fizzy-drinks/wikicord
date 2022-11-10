@@ -2,7 +2,7 @@ import Header from "components/Header";
 import WikiParser from "components/WikiParser";
 import Cookies from "cookies";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
+import { NextSeo } from "next-seo";
 import getSession from "utils/getSession";
 
 type HomePageProps = {
@@ -12,9 +12,10 @@ type HomePageProps = {
 const HomePage: NextPage<HomePageProps> = ({ isSignedIn }) => {
   return (
     <>
-      <Head>
-        <title>Wikicord, the Discord encyclopedia</title>
-      </Head>
+      <NextSeo
+        title="Wikicord, the Discord encyclopedia"
+        description="Wikicord lets you run a private wiki for your Discord server."
+      />
       <Header isSignedIn={isSignedIn} />
       <main>
         <h1>Welcome to Wikicord</h1>
