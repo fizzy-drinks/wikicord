@@ -6,6 +6,7 @@ import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import dbConnection from "utils/dbConnection";
 import { PageDb } from "utils/types/Page";
+import Header from "components/Header";
 
 type GuildsPageProps = {
   guilds: { guild: Guild; articleCount: number }[];
@@ -13,10 +14,13 @@ type GuildsPageProps = {
 
 const GuildsPage: NextPage<GuildsPageProps> = ({ guilds }) => {
   return (
-    <main>
-      <h1>Servers</h1>
-      <Guilds guilds={guilds} />
-    </main>
+    <>
+      <Header />
+      <main>
+        <h1>Servers</h1>
+        <Guilds guilds={guilds} />
+      </main>
+    </>
   );
 };
 

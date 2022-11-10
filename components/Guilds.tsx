@@ -7,12 +7,10 @@ import styled from "styled-components";
 const GuildCard = styled.article`
   border: #eee 1px solid;
   border-radius: 5px;
-  max-width: 400px;
-  width: 400px;
   height: 64px;
-  margin: 0.5rem;
   display: inline-flex;
-  overflow: hidden;
+  overflow-x: hidden;
+  display: flex;
 `;
 
 const GuildCardBody = styled.div`
@@ -25,6 +23,10 @@ const GuildCardTitle = styled.h1`
   font-size: 1.3rem;
   margin: 0;
   padding: 0.2rem;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 315px;
+  text-overflow: ellipsis;
 `;
 
 const GuildCardDescription = styled.div`
@@ -35,7 +37,13 @@ const Guilds: FC<{ guilds: { guild: Guild; articleCount: number }[] }> = ({
   guilds,
 }) => {
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        gap: "5px",
+        flexWrap: "wrap",
+      }}
+    >
       {guilds.map(({ guild, articleCount }) => (
         <Link href={`/${guild.id}/wiki/Home_Page`} key={guild.id}>
           <GuildCard>
@@ -55,7 +63,7 @@ const Guilds: FC<{ guilds: { guild: Guild; articleCount: number }[] }> = ({
           </GuildCard>
         </Link>
       ))}
-    </>
+    </div>
   );
 };
 

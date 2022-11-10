@@ -7,10 +7,13 @@ const Styles = createGlobalStyle`
   html {
     font-family: Merriweather, serif;
     line-height: 1.5;
+    max-width: 1600px;
+    margin: 0 auto;
   }
 
   a {
     text-decoration: none;
+    color: #36a;
 
     &:hover {
       text-decoration: underline;

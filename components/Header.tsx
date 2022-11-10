@@ -17,15 +17,30 @@ const TopNav = styled.nav`
   }
 `;
 
-const Header: FC<{ guild: Guild }> = ({ guild }) => {
+const Header: FC<{ guild?: Guild; isSignedIn?: boolean }> = ({
+  guild,
+  isSignedIn = true,
+}) => {
   return (
     <header>
       <TopNav>
-        <h1 style={{ margin: 0 }}>{guild.name} wiki</h1>
-        <Link href={`/${guild.id}/wiki/Home_Page`}>Home page</Link>
-        <Link href={`/${guild.id}`}>Wiki summary</Link>
-        <Link href="/guilds">My servers</Link>
-        <SearchBar guild={guild} query="" />
+        <Link href={guild ? `/${guild.id}/wiki/Home_Page` : "/"}>
+          <h1>{guild ? `${guild.name} wiki` : "Wikicord"}</h1>
+        </Link>
+        {guild && (
+          <>
+            <Link href={`/${guild.id}`}>Wiki summary</Link>
+            <SearchBar guild={guild} query="" />
+          </>
+        )}
+        {isSignedIn ? (
+          <>
+            <Link href="/guilds">My servers</Link>
+            <Link href="/bye">Sign out</Link>
+          </>
+        ) : (
+          <Link href="/login">Sign in</Link>
+        )}
       </TopNav>
     </header>
   );
