@@ -43,7 +43,9 @@ const VersionPage: NextPage<VersionPageProps> = ({
         {page?.date && <p>Last edited on {page.date}</p>}
         {page?.content && (
           <article id="article">
-            <WikiParser>{page.content}</WikiParser>
+            <WikiParser wikiSubpath={`${guild.id}/wiki`}>
+              {page.content}
+            </WikiParser>
           </article>
         )}
       </main>

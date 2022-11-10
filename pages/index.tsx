@@ -20,7 +20,7 @@ const HomePage: NextPage<HomePageProps> = ({ isSignedIn }) => {
       <main>
         <h1>Welcome to Wikicord</h1>
         <p>Run a private wiki for your Discord server!</p>
-        <WikiParser>
+        <WikiParser wikiSubpath="wiki">
           {`
 # How it works
 
@@ -96,10 +96,17 @@ Basic links can be done in Markdown like [this](https://www.youtube.com/watch?v=
 Basic links can be done in Markdown like [this](https://www.youtube.com/watch?v=GtL1huin9EE).
 ~~~
 
-#### Easier links between articles
+#### Links between articles
 
-You can add links between articles with the same syntax as Wikimedia sites, by wrapping
-words in \`[[double brackets]]\`.
+You can add links between articles by wrapping words in [[double brackets]].
+If you want a word to link to an article with a different title, the format
+should be [[Totally different article:article title:link text]].
+
+~~~md
+You can add links between articles by wrapping words in [[double brackets]].
+If you want a word to link to an article with a different title, the format
+should be [[Totally different article:article title:link text]].
+~~~
 
 ## Images
 

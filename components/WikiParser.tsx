@@ -7,13 +7,19 @@ import remarkSectionize from "remark-sectionize";
 import rehypeToc from "@jsdevtools/rehype-toc";
 import remarkWikiLink from "remark-wiki-link";
 
-const WikiParser: FC<{ children: string }> = ({ children }) => {
+const WikiParser: FC<{ wikiSubpath: string; children: string }> = ({
+  wikiSubpath,
+  children,
+}) => {
   return (
     <ReactMarkdown
       remarkPlugins={[
         remarkGfm,
         remarkSectionize,
-        [remarkWikiLink, { hrefTemplate: (uri: string) => uri }],
+        [
+          remarkWikiLink,
+          { hrefTemplate: (article: string) => `/${wikiSubpath}/${article}` },
+        ],
       ]}
       rehypePlugins={[
         rehypeSlug,
