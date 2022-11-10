@@ -13,6 +13,7 @@ import WikiParser from "components/WikiParser";
 import ArticleNavigation from "components/ArticleNavigation";
 import capitalise from "utils/capitalise";
 import formatDateTime from "utils/formatDateTime";
+import { NextSeo } from "next-seo";
 
 type VersionPageProps = {
   pageTitle: string;
@@ -27,6 +28,7 @@ const VersionPage: NextPage<VersionPageProps> = ({
 }) => {
   return (
     <>
+      <NextSeo title={`${capitalise(pageTitle)} - ${guild.name} wiki`} />
       <Header guild={guild} />
       <main>
         <ArticleNavigation guild={guild} pageTitle={pageTitle} edit={false} />

@@ -9,6 +9,7 @@ import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import formatDateTime from "utils/formatDateTime";
 import getSession from "utils/getSession";
 import { PageDb } from "utils/types/Page";
+import { NextSeo } from "next-seo";
 
 type GuildSummaryPageProps = {
   guild: Guild;
@@ -21,6 +22,7 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
 }) => {
   return (
     <>
+      <NextSeo title={`${guild.name} wiki`} />
       <Header guild={guild} />
       <main>
         <section>

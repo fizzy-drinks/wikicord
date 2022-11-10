@@ -10,6 +10,7 @@ import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import serialisePage from "utils/mappers/serialisePage";
 import { Page, PageDb } from "utils/types/Page";
+import { NextSeo } from "next-seo";
 
 type WikiSearchPageProps = {
   guild: Guild;
@@ -24,6 +25,7 @@ const WikiSearchPage: NextPage<WikiSearchPageProps> = ({
 }) => {
   return (
     <>
+      <NextSeo title={`Search - ${guild.name} wiki`} />
       <Header guild={guild} />
       <main>
         <SearchBar query={searchQuery} guild={guild} />

@@ -11,6 +11,7 @@ import serialisePage from "utils/mappers/serialisePage";
 import ArticleNavigation from "components/ArticleNavigation";
 import capitalise from "utils/capitalise";
 import formatDateTime from "utils/formatDateTime";
+import { NextSeo } from "next-seo";
 
 type VersionHistoryPageProps = {
   pageTitle: string;
@@ -25,6 +26,11 @@ const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
 }) => {
   return (
     <>
+      <NextSeo
+        title={`Version history of ${capitalise(pageTitle)} - ${
+          guild.name
+        } wiki`}
+      />
       <Header guild={guild} />
       <main>
         <ArticleNavigation guild={guild} pageTitle={pageTitle} edit={false} />
