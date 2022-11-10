@@ -101,7 +101,7 @@ Basic links can be done in Markdown like [this](https://www.youtube.com/watch?v=
 You can add links between articles with the same syntax as Wikimedia sites, by wrapping
 words in \`[[double brackets]]\`.
 
-### Images
+## Images
 
 Images have a syntax that's similar to links, but starts with an exclamation mark.
 
@@ -111,7 +111,7 @@ Images have a syntax that's similar to links, but starts with an exclamation mar
 ![Remember this?](/windows-xp-field.jpg)
 ~~~
 
-### Preformatted text & code
+## Preformatted text & code
 
 ~~~
 To write preformatted text,
@@ -129,11 +129,11 @@ const foo = (bar: string) => [20, 'baz'];
 ~~~
 
 
-### GFM
+## GFM
 
 [GFM](https://github.github.com/gfm/) is enabled, so you can make tables and checklists.
 
-#### Tables
+### Tables
 
 Heading | Heading | Heading
 --------|---------|--------
@@ -149,7 +149,7 @@ Cell    | Cell    | Cell
 Cell    | Cell    | Cell
 ~~~
 
-#### Checklists
+### Checklists
 
 - [x] Item 1
 - [x] Item 2
@@ -165,7 +165,7 @@ Cell    | Cell    | Cell
 - [x] Item 5, done early!
 ~~~
 
-#### Strikethrough
+### Strikethrough
 
 ~This was scrapped at some point. Why din't you delete it?~
 
