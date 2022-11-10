@@ -11,6 +11,10 @@ const Styles = createGlobalStyle`
     margin: 0 auto;
   }
 
+  img {
+    max-width: 100%;
+  }
+
   code {
     background-color: #eee;
     display: inline-block;

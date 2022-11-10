@@ -123,7 +123,10 @@ To stop preformatted text,
 ~~~
 
 ~~~js
-// To write code with highlighting, write a file extension after the tildes (~~~md, ~~~js, etc).
+/* To write code with highlighting,
+ * write a file extension after the tildes
+ * (~~~md, ~~~js, etc).
+ */
 
 const foo = (bar: string) => [20, 'baz'];
 ~~~
@@ -167,10 +170,10 @@ Cell    | Cell    | Cell
 
 ### Strikethrough
 
-~This was scrapped at some point. Why din't you delete it?~
+~This was scrapped at some point. Why didn't you delete it?~
 
 ~~~md
-~This was scrapped at some point. Why din't you delete it?~
+~This was scrapped at some point. Why didn't you delete it?~
 ~~~
 `}
         </WikiParser>
