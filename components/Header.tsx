@@ -25,7 +25,9 @@ const Header: FC<{ guild?: Guild; isSignedIn?: boolean }> = ({
     <header>
       <TopNav>
         <Link href={guild ? `/${guild.id}/wiki/Home_Page` : "/"}>
-          <h1>{guild ? `${guild.name} wiki` : "Wikicord"}</h1>
+          <h1 style={{ fontSize: "1.3rem" }}>
+            {guild ? `${guild.name} wiki` : "Wikicord"}
+          </h1>
         </Link>
         {guild && (
           <>

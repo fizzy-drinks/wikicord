@@ -11,6 +11,13 @@ const Styles = createGlobalStyle`
     margin: 0 auto;
   }
 
+  code {
+    background-color: #eee;
+    display: inline-block;
+    font-size: 1rem;
+    border-radius: 2px;
+  }
+
   a {
     text-decoration: none;
     color: #36a;
