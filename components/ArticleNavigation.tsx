@@ -1,27 +1,8 @@
 import Link from "next/link";
 import { FC } from "react";
-import styled from "styled-components";
 import capitalise from "utils/capitalise";
 import { GuildData } from "utils/types/Guild";
-
-const StyledNavigation = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  @media (max-width: 1024px) {
-    flex-direction: column-reverse;
-    align-items: stretch;
-  }
-`;
-
-const Options = styled.div`
-  font-size: 0.9em;
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-bottom: 1rem;
-`;
+import TitleNavigation, { TitleNavigationMenu } from "./TitleNavigation";
 
 const ArticleNavigation: FC<{
   guildData: GuildData;
@@ -29,12 +10,12 @@ const ArticleNavigation: FC<{
   edit: boolean;
 }> = ({ pageTitle, guildData: { guild, alias }, edit }) => {
   return (
-    <StyledNavigation>
+    <TitleNavigation>
       <h1>
         {edit && "Editing "}
         {capitalise(pageTitle)}
       </h1>
-      <Options>
+      <TitleNavigationMenu>
         <Link href={`/${alias || guild.id}/wiki/${pageTitle}`}>Article</Link>
         <Link
           href={{
@@ -47,8 +28,8 @@ const ArticleNavigation: FC<{
         <Link href={`/${alias || guild.id}/wiki/${pageTitle}/version-history`}>
           Version history
         </Link>
-      </Options>
-    </StyledNavigation>
+      </TitleNavigationMenu>
+    </TitleNavigation>
   );
 };
 

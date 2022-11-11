@@ -10,6 +10,9 @@ import { PageDb } from "utils/types/Page";
 import { NextSeo } from "next-seo";
 import findGuildById from "utils/findGuildById";
 import { GuildData } from "utils/types/Guild";
+import TitleNavigation, {
+  TitleNavigationMenu,
+} from "components/TitleNavigation";
 
 type GuildSummaryPageProps = {
   guildData: GuildData;
@@ -27,8 +30,14 @@ const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
       <NextSeo title={`${guild.name} wiki`} />
       <Header guildData={guildData} />
       <main>
+        <TitleNavigation>
+          <h1>{guild.name}</h1>
+          <TitleNavigationMenu>
+            <Link href={`/${alias || guild.id}/preferences`}>Preferences</Link>
+          </TitleNavigationMenu>
+        </TitleNavigation>
         <section>
-          <h1>Recently updated articles</h1>
+          <h1>Recent articles</h1>
           <ul>
             {latestEdits.map((page) => (
               <li key={page.title}>
