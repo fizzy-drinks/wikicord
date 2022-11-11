@@ -80,7 +80,7 @@ const WikiPage: NextPage<WikiPageProps> = ({
           </div>
         )}
         <article id="article">
-          <WikiParser wikiSubpath={`${guild.id}/wiki`}>
+          <WikiParser wikiSubpath={`${alias || guild.id}/wiki`}>
             {pageContent}
           </WikiParser>
         </article>
