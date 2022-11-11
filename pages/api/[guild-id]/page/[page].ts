@@ -1,8 +1,8 @@
 import Cookies from "cookies";
 import { NextApiHandler } from "next";
 import dbConnection from "utils/dbConnection";
-import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import fetchSessionUser from "utils/fetchSessionUser";
+import findGuildById from "utils/findGuildById";
 import getSession from "utils/getSession";
 import { PageDb } from "utils/types/Page";
 
@@ -22,14 +22,14 @@ const handler: NextApiHandler = async (req, res) => {
   const session = await getSession(cookies);
   if (!session) return res.status(401);
 
-  const guilds = await fetchSessionGuilds(session);
-  const guild = guilds.find((g) => g.id === guildId);
+  const db = await dbConnection();
+  const guild = await findGuildById(db, session, guildId);
   if (!guild) {
     return res.status(403);
   }
 
   const user = await fetchSessionUser(session);
-  const pages = (await dbConnection()).collection<PageDb>("pages");
+  const pages = db.collection<PageDb>("pages");
   await pages.insertOne({
     guild_id: guildId,
     title: page.toLowerCase().replace(/\s/g, "_"),

@@ -33,9 +33,9 @@ const GuildCardDescription = styled.div`
   padding: 0 0.2rem;
 `;
 
-const Guilds: FC<{ guilds: { guild: Guild; articleCount: number }[] }> = ({
-  guilds,
-}) => {
+const Guilds: FC<{
+  guilds: { guild: Guild; alias: string | null; articleCount: number }[];
+}> = ({ guilds }) => {
   return (
     <div
       style={{
@@ -44,8 +44,8 @@ const Guilds: FC<{ guilds: { guild: Guild; articleCount: number }[] }> = ({
         flexWrap: "wrap",
       }}
     >
-      {guilds.map(({ guild, articleCount }) => (
-        <Link href={`/${guild.id}/wiki/Home_Page`} key={guild.id}>
+      {guilds.map(({ guild, alias, articleCount }) => (
+        <Link href={`/${alias || guild.id}/wiki/Home_Page`} key={guild.id}>
           <GuildCard>
             <Image
               src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp?size=128`}

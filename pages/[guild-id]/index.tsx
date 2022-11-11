@@ -5,11 +5,11 @@ import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import capitalise from "utils/capitalise";
 import dbConnection from "utils/dbConnection";
-import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import formatDateTime from "utils/formatDateTime";
 import getSession from "utils/getSession";
 import { PageDb } from "utils/types/Page";
 import { NextSeo } from "next-seo";
+import findGuildById from "utils/findGuildById";
 
 type GuildSummaryPageProps = {
   guild: Guild;
@@ -64,8 +64,8 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
-  const guilds = await fetchSessionGuilds(session);
-  const guild = guilds.find((g) => g.id === guildId);
+  const db = await dbConnection();
+  const guild = await findGuildById(db, session, guildId);
   if (!guild) {
     return {
       redirect: {
@@ -75,7 +75,7 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
-  const pagesDb = (await dbConnection()).collection<PageDb>("pages");
+  const pagesDb = db.collection<PageDb>("pages");
   const pages = await pagesDb
     .aggregate<{
       title: string;
@@ -84,7 +84,7 @@ export const getServerSideProps: GetServerSideProps<
     }>([
       {
         $match: {
-          guild_id: guildId,
+          guild_id: guild.id,
         },
       },
       { $sort: { date: -1 } },

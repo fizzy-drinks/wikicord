@@ -1,7 +1,6 @@
 import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
-import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import Link from "next/link";
 import dbConnection from "utils/dbConnection";
@@ -14,6 +13,7 @@ import ArticleNavigation from "components/ArticleNavigation";
 import capitalise from "utils/capitalise";
 import formatDateTime from "utils/formatDateTime";
 import { NextSeo } from "next-seo";
+import findGuildById from "utils/findGuildById";
 
 type VersionPageProps = {
   pageTitle: string;
@@ -74,15 +74,18 @@ export const getServerSideProps: GetServerSideProps<VersionPageProps> = async ({
     return { redirect: { destination: "/", permanent: false } };
   }
 
-  const guilds = await fetchSessionGuilds(session);
-  const guild = guilds.find((g) => g.id === guildId);
+  const db = await dbConnection();
+  const guild = await findGuildById(db, session, guildId);
   if (!guild) {
     return { redirect: { destination: "/guilds", permanent: false } };
   }
 
   const pages = (await dbConnection()).collection<PageDb>("pages");
   const [page] = await pages
-    .find({ _id: new ObjectId(versionId) })
+    .find({
+      _id: new ObjectId(versionId),
+      guild_id: guild.id,
+    })
     .map(serialisePage)
     .toArray();
 
@@ -93,10 +96,6 @@ export const getServerSideProps: GetServerSideProps<VersionPageProps> = async ({
         permanent: false,
       },
     };
-  }
-
-  if (!guilds.some((g) => page.guild_id === g.id)) {
-    return { redirect: { destination: "/guilds", permanent: false } };
   }
 
   return {

@@ -1,7 +1,6 @@
 import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
-import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -15,6 +14,7 @@ import ArticleNavigation from "components/ArticleNavigation";
 import formatDateTime from "utils/formatDateTime";
 import { NextSeo } from "next-seo";
 import capitalise from "utils/capitalise";
+import findGuildById from "utils/findGuildById";
 
 type WikiPageProps = {
   pageTitle: string;
@@ -105,16 +105,17 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
     return { redirect: { destination: "/", permanent: false } };
   }
 
-  const guilds = await fetchSessionGuilds(session);
-  const guild = guilds.find((g) => g.id === guildId);
+  const db = await dbConnection();
+  const pages = db.collection<PageDb>("pages");
+
+  const guild = await findGuildById(db, session, guildId);
   if (!guild) {
     return { redirect: { destination: "/guilds", permanent: false } };
   }
 
-  const pages = (await dbConnection()).collection<PageDb>("pages");
   const [page] = await pages
     .find({
-      guild_id: guildId,
+      guild_id: guild.id,
       title: {
         $in: [
           pageTitle.toLowerCase().replace(/_/g, " "),

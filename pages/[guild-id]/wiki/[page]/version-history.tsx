@@ -1,7 +1,6 @@
 import Cookies from "cookies";
 import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
-import fetchSessionGuilds from "utils/fetchSessionGuilds";
 import getSession from "utils/getSession";
 import Link from "next/link";
 import dbConnection from "utils/dbConnection";
@@ -12,6 +11,7 @@ import ArticleNavigation from "components/ArticleNavigation";
 import capitalise from "utils/capitalise";
 import formatDateTime from "utils/formatDateTime";
 import { NextSeo } from "next-seo";
+import findGuildById from "utils/findGuildById";
 
 type VersionHistoryPageProps = {
   pageTitle: string;
@@ -74,16 +74,16 @@ export const getServerSideProps: GetServerSideProps<
     return { redirect: { destination: "/", permanent: false } };
   }
 
-  const guilds = await fetchSessionGuilds(session);
-  const guild = guilds.find((g) => g.id === guildId);
+  const db = await dbConnection();
+  const guild = await findGuildById(db, session, guildId);
   if (!guild) {
     return { redirect: { destination: "/guilds", permanent: false } };
   }
 
-  const pages = (await dbConnection()).collection<PageDb>("pages");
+  const pages = db.collection<PageDb>("pages");
   const versions = await pages
     .find({
-      guild_id: guildId,
+      guild_id: guild.id,
       title: {
         $in: [
           pageTitle.toLowerCase().replace(/_/g, " "),
