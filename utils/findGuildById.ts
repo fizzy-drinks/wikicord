@@ -15,7 +15,9 @@ const findGuildById = async (
     .map(({ alias, guild_id }) => ({ alias, guild_id }))
     .toArray();
 
-  const guildConfig = guildsWithConfig.find((g) => g.alias === guildId);
+  const guildConfig = guildsWithConfig.find((g) =>
+    [g.alias, g.guild_id].includes(guildId)
+  );
   const findId = guildConfig?.guild_id || guildId;
 
   const guild = guilds.find((g) => g.id === findId);
