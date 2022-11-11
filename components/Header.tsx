@@ -1,8 +1,8 @@
-import { Guild } from "discord.js";
 import Link from "next/link";
 import { FC } from "react";
 import SearchBar from "./SearchBar";
 import styled from "styled-components";
+import { GuildData } from "utils/types/Guild";
 
 const TopNav = styled.nav`
   display: flex;
@@ -17,32 +17,44 @@ const TopNav = styled.nav`
   }
 `;
 
-const Header: FC<{ guild?: Guild; isSignedIn?: boolean }> = ({
-  guild,
+const NavbarTitle = styled.h1`
+  font-size: 1.3em;
+`;
+
+const Header: FC<{ guildData?: GuildData; isSignedIn?: boolean }> = ({
+  guildData,
   isSignedIn = true,
 }) => {
+  if (!guildData) {
+    return (
+      <header>
+        <TopNav>
+          <Link href="/">
+            <NavbarTitle>Wikicord</NavbarTitle>
+          </Link>
+          <Link href="/guilds">My servers</Link>
+          {isSignedIn ? (
+            <Link href="/bye">Sign out</Link>
+          ) : (
+            <Link href="/login">Sign in</Link>
+          )}
+        </TopNav>
+      </header>
+    );
+  }
+
+  const { guild, alias } = guildData;
+
   return (
     <header>
       <TopNav>
-        <Link href={guild ? `/${guild.id}/wiki/Home_Page` : "/"}>
-          <h1 style={{ fontSize: "1.3rem" }}>
-            {guild ? `${guild.name} wiki` : "Wikicord"}
-          </h1>
+        <Link href={`/${alias || guild.id}/wiki/Home_Page`}>
+          <NavbarTitle>{guild.name} wiki</NavbarTitle>
         </Link>
-        {guild && (
-          <>
-            <Link href={`/${guild.id}`}>Wiki summary</Link>
-            <SearchBar guild={guild} query="" />
-          </>
-        )}
-        {isSignedIn ? (
-          <>
-            <Link href="/guilds">My servers</Link>
-            <Link href="/bye">Sign out</Link>
-          </>
-        ) : (
-          <Link href="/login">Sign in</Link>
-        )}
+        <Link href={`/${alias || guild.id}`}>Wiki summary</Link>
+        <SearchBar guildData={guildData} query="" />
+        <Link href="/guilds">My servers</Link>
+        <Link href="/bye">Sign out</Link>
       </TopNav>
     </header>
   );

@@ -1,13 +1,12 @@
-import { Guild } from "discord.js";
 import { Db } from "mongodb";
 import { AccessToken } from "simple-oauth2";
 import fetchSessionGuilds from "./fetchSessionGuilds";
-import { GuildDb } from "./types/Guild";
+import { GuildData, GuildDb } from "./types/Guild";
 
 const findGuildsWithAliases = async (
   db: Db,
   session: AccessToken
-): Promise<{ guild: Guild; alias?: string }[]> => {
+): Promise<GuildData[]> => {
   const guildsDb = db.collection<GuildDb>("guilds");
   const guilds = await fetchSessionGuilds(session);
   const guildsWithConfig = await guildsDb
@@ -17,7 +16,9 @@ const findGuildsWithAliases = async (
 
   return guilds.map((g) => ({
     guild: g,
-    alias: guildsWithConfig.find((dbGuild) => dbGuild.guild_id === g.id)?.alias,
+    alias:
+      guildsWithConfig.find((dbGuild) => dbGuild.guild_id === g.id)?.alias ??
+      null,
   }));
 };
 

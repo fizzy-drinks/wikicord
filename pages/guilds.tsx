@@ -1,5 +1,4 @@
 import Cookies from "cookies";
-import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import Guilds from "components/Guilds";
 import getSession from "utils/getSession";
@@ -8,9 +7,10 @@ import { PageDb } from "utils/types/Page";
 import Header from "components/Header";
 import findGuildsWithAliases from "utils/findGuildsWithAliases";
 import { NextSeo } from "next-seo";
+import { GuildData } from "utils/types/Guild";
 
 type GuildsPageProps = {
-  guilds: { guild: Guild; alias: string | null; articleCount: number }[];
+  guilds: (GuildData & { articleCount: number })[];
 };
 
 const GuildsPage: NextPage<GuildsPageProps> = ({ guilds }) => {

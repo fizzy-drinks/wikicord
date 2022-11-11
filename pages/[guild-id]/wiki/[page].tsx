@@ -1,5 +1,4 @@
 import Cookies from "cookies";
-import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import getSession from "utils/getSession";
 import { useEffect, useState } from "react";
@@ -15,10 +14,11 @@ import formatDateTime from "utils/formatDateTime";
 import { NextSeo } from "next-seo";
 import capitalise from "utils/capitalise";
 import findGuildById from "utils/findGuildById";
+import { GuildData } from "utils/types/Guild";
 
 type WikiPageProps = {
   pageTitle: string;
-  guild: Guild;
+  guildData: GuildData;
   page: Page | null;
   edit: boolean;
 };
@@ -26,9 +26,10 @@ type WikiPageProps = {
 const WikiPage: NextPage<WikiPageProps> = ({
   pageTitle,
   page,
-  guild,
+  guildData,
   edit,
 }) => {
+  const { guild, alias } = guildData;
   const router = useRouter();
   const [pageContent, setPageContent] = useState<string>(page?.content || "");
   useEffect(() => {
@@ -38,11 +39,11 @@ const WikiPage: NextPage<WikiPageProps> = ({
   const [loading, setLoading] = useState(false);
   const updatePage = async () => {
     setLoading(true);
-    await axios.put(`/api/${guild.id}/page/${pageTitle}`, {
+    await axios.put(`/api/${alias || guild.id}/page/${pageTitle}`, {
       content: pageContent,
     });
     router.push({
-      pathname: `/${guild.id}/wiki/${pageTitle}`,
+      pathname: `/${alias || guild.id}/wiki/${pageTitle}`,
       query: { edit: "false" },
     });
     setLoading(false);
@@ -51,9 +52,13 @@ const WikiPage: NextPage<WikiPageProps> = ({
   return (
     <>
       <NextSeo title={`${capitalise(pageTitle)} - ${guild.name} wiki`} />
-      <Header guild={guild} />
+      <Header guildData={guildData} />
       <main>
-        <ArticleNavigation guild={guild} pageTitle={pageTitle} edit={edit} />
+        <ArticleNavigation
+          guildData={guildData}
+          pageTitle={pageTitle}
+          edit={edit}
+        />
         {page?.date && (
           <small>Last edited on {formatDateTime(page.date)}</small>
         )}
@@ -108,14 +113,14 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
   const db = await dbConnection();
   const pages = db.collection<PageDb>("pages");
 
-  const guild = await findGuildById(db, session, guildId);
-  if (!guild) {
+  const guildData = await findGuildById(db, session, guildId);
+  if (!guildData) {
     return { redirect: { destination: "/guilds", permanent: false } };
   }
 
   const [page] = await pages
     .find({
-      guild_id: guild.id,
+      guild_id: guildData.guild.id,
       title: {
         $in: [
           pageTitle.toLowerCase().replace(/_/g, " "),
@@ -132,7 +137,7 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
     props: {
       pageTitle,
       page: page ?? null,
-      guild,
+      guildData,
       edit,
     },
   };

@@ -1,8 +1,11 @@
-import { Guild } from "discord.js";
 import { useRouter } from "next/router";
 import { FC, FormEventHandler, useEffect, useState } from "react";
+import { GuildData } from "utils/types/Guild";
 
-const SearchBar: FC<{ guild: Guild; query: string }> = ({ guild, query }) => {
+const SearchBar: FC<{ guildData: GuildData; query: string }> = ({
+  guildData: { alias, guild },
+  query,
+}) => {
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState(query);
   useEffect(() => {
@@ -13,7 +16,10 @@ const SearchBar: FC<{ guild: Guild; query: string }> = ({ guild, query }) => {
   const search: FormEventHandler = (e) => {
     e.preventDefault();
 
-    router.push({ pathname: `/${guild.id}/search`, query: { q: searchValue } });
+    router.push({
+      pathname: `/${alias || guild.id}/search`,
+      query: { q: searchValue },
+    });
   };
 
   useEffect(() => {

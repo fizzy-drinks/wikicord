@@ -1,7 +1,6 @@
 import Header from "components/Header";
 import SearchBar from "components/SearchBar";
 import Cookies from "cookies";
-import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import capitalise from "utils/capitalise";
@@ -11,28 +10,31 @@ import serialisePage from "utils/mappers/serialisePage";
 import { Page, PageDb } from "utils/types/Page";
 import { NextSeo } from "next-seo";
 import findGuildById from "utils/findGuildById";
+import { GuildData } from "utils/types/Guild";
 
 type WikiSearchPageProps = {
-  guild: Guild;
+  guildData: GuildData;
   results: Page[];
   searchQuery: string;
 };
 
 const WikiSearchPage: NextPage<WikiSearchPageProps> = ({
-  guild,
+  guildData,
   results,
   searchQuery,
 }) => {
+  const { alias, guild } = guildData;
+
   return (
     <>
       <NextSeo title={`Search - ${guild.name} wiki`} />
-      <Header guild={guild} />
+      <Header guildData={guildData} />
       <main>
-        <SearchBar query={searchQuery} guild={guild} />
+        <SearchBar query={searchQuery} guildData={guildData} />
         <ul>
           {results.map((page) => (
             <li key={page._id}>
-              <Link href={`/${guild.id}/wiki/${page.title}`}>
+              <Link href={`/${alias || guild.id}/wiki/${page.title}`}>
                 {capitalise(page.title)}
               </Link>
             </li>
@@ -67,8 +69,8 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const db = await dbConnection();
-  const guild = await findGuildById(db, session, guildId);
-  if (!guild) {
+  const guildData = await findGuildById(db, session, guildId);
+  if (!guildData) {
     return {
       redirect: {
         permanent: false,
@@ -80,7 +82,7 @@ export const getServerSideProps: GetServerSideProps<
   const pagesDb = db.collection<PageDb>("pages");
   const pages = await pagesDb
     .find({
-      guild_id: guild.id,
+      guild_id: guildData.guild.id,
       $or: [
         {
           title: {
@@ -95,7 +97,7 @@ export const getServerSideProps: GetServerSideProps<
 
   return {
     props: {
-      guild,
+      guildData: guildData,
       searchQuery,
       results: pages,
     },

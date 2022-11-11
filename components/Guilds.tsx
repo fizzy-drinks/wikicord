@@ -1,8 +1,8 @@
-import { Guild } from "discord.js";
 import Link from "next/link";
 import { FC } from "react";
 import Image from "next/image";
 import styled from "styled-components";
+import { GuildData } from "utils/types/Guild";
 
 const GuildCard = styled.article`
   border: #eee 1px solid;
@@ -34,7 +34,7 @@ const GuildCardDescription = styled.div`
 `;
 
 const Guilds: FC<{
-  guilds: { guild: Guild; alias: string | null; articleCount: number }[];
+  guilds: (GuildData & { articleCount: number })[];
 }> = ({ guilds }) => {
   return (
     <div

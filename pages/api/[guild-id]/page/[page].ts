@@ -23,15 +23,15 @@ const handler: NextApiHandler = async (req, res) => {
   if (!session) return res.status(401);
 
   const db = await dbConnection();
-  const guild = await findGuildById(db, session, guildId);
-  if (!guild) {
+  const guildData = await findGuildById(db, session, guildId);
+  if (!guildData) {
     return res.status(403);
   }
 
   const user = await fetchSessionUser(session);
   const pages = db.collection<PageDb>("pages");
   await pages.insertOne({
-    guild_id: guildId,
+    guild_id: guildData.guild.id,
     title: page.toLowerCase().replace(/\s/g, "_"),
     content: req.body.content,
     date: new Date(),

@@ -1,5 +1,4 @@
 import Cookies from "cookies";
-import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import getSession from "utils/getSession";
 import Link from "next/link";
@@ -12,18 +11,20 @@ import capitalise from "utils/capitalise";
 import formatDateTime from "utils/formatDateTime";
 import { NextSeo } from "next-seo";
 import findGuildById from "utils/findGuildById";
+import { GuildData } from "utils/types/Guild";
 
 type VersionHistoryPageProps = {
   pageTitle: string;
-  guild: Guild;
+  guildData: GuildData;
   versions: Page[];
 };
 
 const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
   pageTitle,
   versions,
-  guild,
+  guildData,
 }) => {
+  const { guild, alias } = guildData;
   return (
     <>
       <NextSeo
@@ -31,12 +32,16 @@ const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
           guild.name
         } wiki`}
       />
-      <Header guild={guild} />
+      <Header guildData={guildData} />
       <main>
-        <ArticleNavigation guild={guild} pageTitle={pageTitle} edit={false} />
+        <ArticleNavigation
+          guildData={guildData}
+          pageTitle={pageTitle}
+          edit={false}
+        />
         <p>
           Version history of{" "}
-          <Link href={`/${guild.id}/wiki/${pageTitle}`}>
+          <Link href={`/${alias || guild.id}/wiki/${pageTitle}`}>
             {capitalise(pageTitle)}
           </Link>
           .
@@ -44,7 +49,9 @@ const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
         <ul>
           {versions.map((version) => (
             <li key={version._id}>
-              <Link href={`/${guild.id}/wiki/${pageTitle}/${version._id}`}>
+              <Link
+                href={`/${alias || guild.id}/wiki/${pageTitle}/${version._id}`}
+              >
                 {version.date ? formatDateTime(version.date) : "(no date)"}
               </Link>
               {version.author && ` by ${version.author}`}
@@ -75,15 +82,15 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const db = await dbConnection();
-  const guild = await findGuildById(db, session, guildId);
-  if (!guild) {
+  const guildData = await findGuildById(db, session, guildId);
+  if (!guildData) {
     return { redirect: { destination: "/guilds", permanent: false } };
   }
 
   const pages = db.collection<PageDb>("pages");
   const versions = await pages
     .find({
-      guild_id: guild.id,
+      guild_id: guildData.guild.id,
       title: {
         $in: [
           pageTitle.toLowerCase().replace(/_/g, " "),
@@ -100,7 +107,7 @@ export const getServerSideProps: GetServerSideProps<
     props: {
       pageTitle,
       versions,
-      guild,
+      guildData,
     },
   };
 };

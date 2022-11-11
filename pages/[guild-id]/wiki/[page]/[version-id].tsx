@@ -1,5 +1,4 @@
 import Cookies from "cookies";
-import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import getSession from "utils/getSession";
 import Link from "next/link";
@@ -14,27 +13,33 @@ import capitalise from "utils/capitalise";
 import formatDateTime from "utils/formatDateTime";
 import { NextSeo } from "next-seo";
 import findGuildById from "utils/findGuildById";
+import { GuildData } from "utils/types/Guild";
 
 type VersionPageProps = {
   pageTitle: string;
-  guild: Guild;
+  guildData: GuildData;
   page: Page;
 };
 
 const VersionPage: NextPage<VersionPageProps> = ({
   pageTitle,
   page,
-  guild,
+  guildData,
 }) => {
+  const { guild, alias } = guildData;
   return (
     <>
       <NextSeo title={`${capitalise(pageTitle)} - ${guild.name} wiki`} />
-      <Header guild={guild} />
+      <Header guildData={guildData} />
       <main>
-        <ArticleNavigation guild={guild} pageTitle={pageTitle} edit={false} />
+        <ArticleNavigation
+          guildData={guildData}
+          pageTitle={pageTitle}
+          edit={false}
+        />
         <p>
           You are viewing a historical version of{" "}
-          <Link href={`/${guild.id}/wiki/${page?.title}`}>
+          <Link href={`/${alias || guild.id}/wiki/${page?.title}`}>
             {capitalise(pageTitle)}
           </Link>{" "}
           from {page.date && formatDateTime(page.date)}, edited by{" "}
@@ -43,7 +48,7 @@ const VersionPage: NextPage<VersionPageProps> = ({
         {page?.date && <p>Last edited on {page.date}</p>}
         {page?.content && (
           <article id="article">
-            <WikiParser wikiSubpath={`${guild.id}/wiki`}>
+            <WikiParser wikiSubpath={`${alias || guild.id}/wiki`}>
               {page.content}
             </WikiParser>
           </article>
@@ -75,8 +80,8 @@ export const getServerSideProps: GetServerSideProps<VersionPageProps> = async ({
   }
 
   const db = await dbConnection();
-  const guild = await findGuildById(db, session, guildId);
-  if (!guild) {
+  const guildData = await findGuildById(db, session, guildId);
+  if (!guildData) {
     return { redirect: { destination: "/guilds", permanent: false } };
   }
 
@@ -84,7 +89,7 @@ export const getServerSideProps: GetServerSideProps<VersionPageProps> = async ({
   const [page] = await pages
     .find({
       _id: new ObjectId(versionId),
-      guild_id: guild.id,
+      guild_id: guildData.guild.id,
     })
     .map(serialisePage)
     .toArray();
@@ -102,7 +107,7 @@ export const getServerSideProps: GetServerSideProps<VersionPageProps> = async ({
     props: {
       pageTitle,
       page,
-      guild,
+      guildData,
     },
   };
 };

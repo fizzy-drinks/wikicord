@@ -1,6 +1,5 @@
 import Header from "components/Header";
 import Cookies from "cookies";
-import { Guild } from "discord.js";
 import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import capitalise from "utils/capitalise";
@@ -10,27 +9,30 @@ import getSession from "utils/getSession";
 import { PageDb } from "utils/types/Page";
 import { NextSeo } from "next-seo";
 import findGuildById from "utils/findGuildById";
+import { GuildData } from "utils/types/Guild";
 
 type GuildSummaryPageProps = {
-  guild: Guild;
+  guildData: GuildData;
   latestEdits: { title: string; date: string | null; author: string | null }[];
 };
 
 const GuildSummaryPage: NextPage<GuildSummaryPageProps> = ({
-  guild,
+  guildData,
   latestEdits,
 }) => {
+  const { guild, alias } = guildData;
+
   return (
     <>
       <NextSeo title={`${guild.name} wiki`} />
-      <Header guild={guild} />
+      <Header guildData={guildData} />
       <main>
         <section>
           <h1>Recently updated articles</h1>
           <ul>
             {latestEdits.map((page) => (
               <li key={page.title}>
-                <Link href={`/${guild.id}/wiki/${page.title}`}>
+                <Link href={`/${alias || guild.id}/wiki/${page.title}`}>
                   {capitalise(page.title)}
                 </Link>{" "}
                 {page.date && <small>({formatDateTime(page.date)})</small>}{" "}
@@ -65,8 +67,8 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const db = await dbConnection();
-  const guild = await findGuildById(db, session, guildId);
-  if (!guild) {
+  const guildData = await findGuildById(db, session, guildId);
+  if (!guildData) {
     return {
       redirect: {
         permanent: false,
@@ -84,7 +86,7 @@ export const getServerSideProps: GetServerSideProps<
     }>([
       {
         $match: {
-          guild_id: guild.id,
+          guild_id: guildData.guild.id,
         },
       },
       { $sort: { date: -1 } },
@@ -114,7 +116,7 @@ export const getServerSideProps: GetServerSideProps<
 
   return {
     props: {
-      guild,
+      guildData,
       latestEdits: pages,
     },
   };
