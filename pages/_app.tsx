@@ -81,6 +81,23 @@ const Styles = createGlobalStyle`
   td {
     padding: .1em .5em;
   }
+
+  .toc {
+    width: fit-content;
+    padding: .25rem .5rem;
+    margin: .5rem 0;
+    box-shadow: 0 0 1px #000;
+
+    ol {
+      margin: 0;
+      padding: 0;
+      padding-inline-start: 1em;
+    }
+
+    li {
+      margin: 0;
+    }
+  }
 `;
 
 const WikicordApp: NextPage<AppProps> = ({ Component, pageProps }) => {
