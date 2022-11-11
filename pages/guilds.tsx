@@ -7,6 +7,7 @@ import dbConnection from "utils/dbConnection";
 import { PageDb } from "utils/types/Page";
 import Header from "components/Header";
 import findGuildsWithAliases from "utils/findGuildsWithAliases";
+import { NextSeo } from "next-seo";
 
 type GuildsPageProps = {
   guilds: { guild: Guild; alias: string | null; articleCount: number }[];
@@ -15,6 +16,7 @@ type GuildsPageProps = {
 const GuildsPage: NextPage<GuildsPageProps> = ({ guilds }) => {
   return (
     <>
+      <NextSeo title="My servers - Wikicord, the Discord encyclopedia" />
       <Header />
       <main>
         <h1>Servers</h1>
