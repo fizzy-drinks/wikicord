@@ -7,22 +7,13 @@ import TitleNavigation, { TitleNavigationMenu } from "./TitleNavigation";
 const ArticleNavigation: FC<{
   guildData: GuildData;
   pageTitle: string;
-  edit: boolean;
-}> = ({ pageTitle, guildData: { guild, alias }, edit }) => {
+}> = ({ pageTitle, guildData: { guild, alias } }) => {
   return (
     <TitleNavigation>
-      <h1>
-        {edit && "Editing "}
-        {capitalise(pageTitle)}
-      </h1>
+      <h1>{capitalise(pageTitle)}</h1>
       <TitleNavigationMenu>
         <Link href={`/${alias || guild.id}/wiki/${pageTitle}`}>Article</Link>
-        <Link
-          href={{
-            pathname: `/${alias || guild.id}/wiki/${pageTitle}`,
-            query: { edit: "true" },
-          }}
-        >
+        <Link href={`/${alias || guild.id}/wiki/${pageTitle}/edit`}>
           Source
         </Link>
         <Link href={`/${alias || guild.id}/wiki/${pageTitle}/version-history`}>

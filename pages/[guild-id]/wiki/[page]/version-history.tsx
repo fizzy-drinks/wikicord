@@ -34,11 +34,7 @@ const VersionHistoryPage: NextPage<VersionHistoryPageProps> = ({
       />
       <Header guildData={guildData} />
       <main>
-        <ArticleNavigation
-          guildData={guildData}
-          pageTitle={pageTitle}
-          edit={false}
-        />
+        <ArticleNavigation guildData={guildData} pageTitle={pageTitle} />
         <p>
           Version history of{" "}
           <Link href={`/${alias || guild.id}/wiki/${pageTitle}`}>

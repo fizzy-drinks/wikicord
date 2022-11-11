@@ -32,21 +32,16 @@ const VersionPage: NextPage<VersionPageProps> = ({
       <NextSeo title={`${capitalise(pageTitle)} - ${guild.name} wiki`} />
       <Header guildData={guildData} />
       <main>
-        <ArticleNavigation
-          guildData={guildData}
-          pageTitle={pageTitle}
-          edit={false}
-        />
-        <p>
+        <ArticleNavigation guildData={guildData} pageTitle={pageTitle} />
+        <small>
           You are viewing a historical version of{" "}
           <Link href={`/${alias || guild.id}/wiki/${page?.title}`}>
             {capitalise(pageTitle)}
           </Link>{" "}
           from {page.date && formatDateTime(page.date)}, edited by{" "}
           {page.author || "someone"}.
-        </p>
-        {page?.date && <p>Last edited on {page.date}</p>}
-        {page?.content && (
+        </small>
+        {page.content && (
           <article id="article">
             <WikiParser wikiSubpath={`${alias || guild.id}/wiki`}>
               {page.content}

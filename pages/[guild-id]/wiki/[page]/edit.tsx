@@ -1,6 +1,9 @@
 import Cookies from "cookies";
 import { GetServerSideProps, NextPage } from "next";
 import getSession from "utils/getSession";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
 import dbConnection from "utils/dbConnection";
 import { Page, PageDb } from "utils/types/Page";
 import Header from "components/Header";
@@ -12,16 +15,35 @@ import { NextSeo } from "next-seo";
 import capitalise from "utils/capitalise";
 import findGuildById from "utils/findGuildById";
 import { GuildData } from "utils/types/Guild";
-import Link from "next/link";
 
-type WikiPageProps = {
+type EditWikiPageProps = {
   pageTitle: string;
   guildData: GuildData;
   page: Page | null;
 };
 
-const WikiPage: NextPage<WikiPageProps> = ({ pageTitle, page, guildData }) => {
+const EditWikiPage: NextPage<EditWikiPageProps> = ({
+  pageTitle,
+  page,
+  guildData,
+}) => {
   const { guild, alias } = guildData;
+  const router = useRouter();
+  const [pageContent, setPageContent] = useState<string>(page?.content || "");
+  useEffect(() => {
+    setPageContent(page?.content || "");
+  }, [page]);
+
+  const [loading, setLoading] = useState(false);
+  const updatePage = async () => {
+    setLoading(true);
+    await axios.put(`/api/${alias || guild.id}/page/${pageTitle}`, {
+      content: pageContent,
+    });
+    router.push({
+      pathname: `/${alias || guild.id}/wiki/${pageTitle}`,
+    });
+  };
 
   return (
     <>
@@ -29,45 +51,44 @@ const WikiPage: NextPage<WikiPageProps> = ({ pageTitle, page, guildData }) => {
       <Header guildData={guildData} />
       <main>
         <ArticleNavigation guildData={guildData} pageTitle={pageTitle} />
-        {!page && (
-          <small>
-            This page does not exist. You can{" "}
-            <Link href={`/${alias || guild.id}/wiki/${pageTitle}/edit`}>
-              create
-            </Link>{" "}
-            it or <Link href={`/${alias || guild.id}/search`}>search</Link> for
-            something else.
-          </small>
+        {page?.date && (
+          <small>Last edited on {formatDateTime(page.date)}</small>
         )}
-        {page && (
-          <>
-            {page.date && (
-              <small>Last edited on {formatDateTime(page.date)}</small>
-            )}
-            <article id="article">
-              <WikiParser wikiSubpath={`${alias || guild.id}/wiki`}>
-                {page.content}
-              </WikiParser>
-            </article>
-          </>
-        )}
+        <div>
+          <textarea
+            style={{
+              width: "100%",
+              minHeight: 400,
+              fontFamily: "sans-serif",
+              borderRadius: 2,
+            }}
+            value={pageContent}
+            onChange={(e) => setPageContent(e.target.value)}
+          />
+          <button disabled={loading} type="button" onClick={updatePage}>
+            Save
+          </button>
+        </div>
+        <article id="article">
+          <WikiParser wikiSubpath={`${alias || guild.id}/wiki`}>
+            {pageContent}
+          </WikiParser>
+        </article>
       </main>
     </>
   );
 };
 
-export default WikiPage;
+export default EditWikiPage;
 
 const parseQuery = (query) => ({
   guildId: query["guild-id"] as string,
   pageTitle: query.page as string,
 });
 
-export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
-  query,
-  req,
-  res,
-}) => {
+export const getServerSideProps: GetServerSideProps<
+  EditWikiPageProps
+> = async ({ query, req, res }) => {
   const { guildId, pageTitle } = parseQuery(query);
 
   const cookies = new Cookies(req, res);
