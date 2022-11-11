@@ -61,7 +61,7 @@ const Styles = createGlobalStyle`
   }
 
   ul {
-    line-height: 1em;
+    line-height: 1.25em;
   }
 
   table {
