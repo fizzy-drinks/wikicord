@@ -59,6 +59,28 @@ const Styles = createGlobalStyle`
   main {
     margin-top: 1rem;
   }
+
+  ul {
+    line-height: 1em;
+  }
+
+  table {
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    border-bottom: 1px solid #ccc;
+  }
+
+  tbody tr:nth-child(odd) {
+    background-color: #eee;
+  }
+
+  th,
+  td {
+    padding: .1em .5em;
+  }
 `;
 
 const WikicordApp: NextPage<AppProps> = ({ Component, pageProps }) => {
