@@ -32,9 +32,11 @@ const Header: FC<{ guildData?: GuildData; isSignedIn?: boolean }> = ({
           <Link href="/">
             <NavbarTitle>Wikicord</NavbarTitle>
           </Link>
-          <Link href="/guilds">My servers</Link>
           {isSignedIn ? (
-            <Link href="/bye">Sign out</Link>
+            <>
+              <Link href="/guilds">My servers</Link>
+              <Link href="/bye">Sign out</Link>
+            </>
           ) : (
             <Link href="/login">Sign in</Link>
           )}
