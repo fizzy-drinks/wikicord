@@ -64,6 +64,7 @@ const GlobalStyles = createGlobalStyle`
   table {
     table-layout: fixed;
     border-collapse: collapse;
+    margin-bottom: 1.5rem;
   }
 
   thead tr {
