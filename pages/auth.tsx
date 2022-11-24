@@ -7,10 +7,14 @@ import { useEffect } from "react";
 import { AuthorizationCode } from "simple-oauth2";
 import getSession from "utils/getSession";
 
-const AuthPage: NextPage = () => {
+type AuthPageProps = {
+  redirect: string | null;
+};
+
+const AuthPage: NextPage<AuthPageProps> = ({ redirect }) => {
   const router = useRouter();
   useEffect(() => {
-    router.push("/guilds");
+    router.push(redirect ?? "/guilds");
   }, []);
 
   return <p>Redirecting...</p>;
@@ -18,15 +22,18 @@ const AuthPage: NextPage = () => {
 
 export default AuthPage;
 
-const isValidQuery = (query): query is { code: string } =>
-  typeof query.code === "string";
+const getQuery = (query) => ({
+  code: query.code as string | null,
+  state: query.state as string | null,
+});
 
-export const getServerSideProps: GetServerSideProps = async ({
+export const getServerSideProps: GetServerSideProps<AuthPageProps> = async ({
   query,
   req,
   res,
 }) => {
-  if (!isValidQuery(query)) {
+  const { code, state } = getQuery(query);
+  if (!code) {
     return {
       redirect: {
         permanent: false,
@@ -56,7 +63,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
 
   const accessToken = await discordClient.getToken({
-    code: query.code,
+    code,
     redirect_uri: serverRuntimeConfig.discord.redirectUri,
     scope: ["guilds", "identify"],
   });
@@ -71,6 +78,8 @@ export const getServerSideProps: GetServerSideProps = async ({
   );
 
   return {
-    props: {},
+    props: {
+      redirect: state,
+    },
   };
 };

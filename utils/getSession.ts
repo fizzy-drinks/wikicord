@@ -22,9 +22,14 @@ const getSession = async (cookies: Cookies) => {
 
   const token = discordClient.createToken(JSON.parse(tokenCookie));
   if (token.expired()) {
-    const refreshed = await token.refresh();
-    cookies.set("discord_token", JSON.stringify(refreshed), { path: "/" });
-    return refreshed;
+    try {
+      const refreshed = await token.refresh();
+      cookies.set("discord_token", JSON.stringify(refreshed), { path: "/" });
+      return refreshed;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 
   return token;

@@ -48,7 +48,7 @@ const GuildAliasEdit: FC<{
     setStatus("checking");
     const {
       data: { available },
-    } = await axios.get<{ available: boolean }>("/api/alias/" + guildAlias);
+    } = await axios.get<{ available: boolean }>(`/api/alias/${guildAlias}`);
 
     setStatus(available ? "available" : "not-available");
   };

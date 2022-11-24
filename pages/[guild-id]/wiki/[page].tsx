@@ -73,7 +73,12 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
   const cookies = new Cookies(req, res);
   const session = await getSession(cookies);
   if (!session) {
-    return { redirect: { destination: "/", permanent: false } };
+    return {
+      redirect: {
+        destination: `/login?redirect=/${guildId}/${pageTitle}`,
+        permanent: false,
+      },
+    };
   }
 
   const db = await dbConnection();

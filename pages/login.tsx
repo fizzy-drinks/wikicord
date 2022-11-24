@@ -6,7 +6,10 @@ export default function Bye() {
   return <p>Redirecting...</p>;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+const getQuery = (query) => ({ redirect: query.redirect as string });
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const { redirect } = getQuery(query);
   const { serverRuntimeConfig } = getConfig();
 
   const discordClient = new AuthorizationCode({
@@ -22,6 +25,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   const authUrl = discordClient.authorizeURL({
     redirect_uri: serverRuntimeConfig.discord.redirectUri,
+    state: redirect,
     scope: ["guilds", "identify"],
   });
 

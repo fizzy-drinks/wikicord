@@ -70,7 +70,7 @@ export const getServerSideProps: GetServerSideProps<
     return {
       redirect: {
         permanent: false,
-        destination: "/",
+        destination: `/login?redirect=/${guildId}`,
       },
     };
   }

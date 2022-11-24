@@ -35,7 +35,12 @@ export const getServerSideProps: GetServerSideProps<GuildsPageProps> = async ({
   const cookies = new Cookies(req, res);
   const session = await getSession(cookies);
   if (!session) {
-    return { redirect: { permanent: false, destination: "/" } };
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login?redirect=/guilds",
+      },
+    };
   }
 
   const db = await dbConnection();
