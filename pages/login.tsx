@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   });
 
   const authUrl = discordClient.authorizeURL({
-    redirect_uri: serverRuntimeConfig.discord.redirectUri,
+    redirect_uri: encodeURIComponent(serverRuntimeConfig.discord.redirectUri),
     state: redirect,
     scope: ["guilds", "identify"],
   });

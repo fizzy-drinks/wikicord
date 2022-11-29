@@ -96,7 +96,7 @@ export const getServerSideProps: GetServerSideProps<
   if (!session) {
     return {
       redirect: {
-        destination: `/login?redirect=/${guildId}/${pageTitle}/edit`,
+        destination: `/login?redirect=/${guildId}/wiki/${pageTitle}/edit`,
         permanent: false,
       },
     };

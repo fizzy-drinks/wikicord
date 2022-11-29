@@ -75,7 +75,7 @@ export const getServerSideProps: GetServerSideProps<WikiPageProps> = async ({
   if (!session) {
     return {
       redirect: {
-        destination: `/login?redirect=/${guildId}/${pageTitle}`,
+        destination: `/login?redirect=/${guildId}/wiki/${pageTitle}`,
         permanent: false,
       },
     };
